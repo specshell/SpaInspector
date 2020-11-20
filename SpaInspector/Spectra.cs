@@ -8,26 +8,20 @@ namespace SpaInspector
 {
     public sealed record Spectra
     {
-        private const int WaveNumberStart = 0x000244;
-        private const int WaveNumberEnd = 0x000240;
-        private const int WaveNumberSize = 0x000234;
-        private const int Gain = 0x000368;
-        private const int OpticalVelocity = 0x00036C;
-        private const int SignalStrength = 0x000278;
-        private const int FileDescription = 0x00001E;
-        private const int SpectreDescription = 0x000380;
-
         private readonly int _absorbanceEnd;
         private readonly int _interferogramBackgroundEnd;
         private readonly int _interferogramAbsorbanceEnd;
         private readonly bool _isInterferogramPresent;
+        private List<float> _arbsorbanceInterferogramList = new();
+        private List<float> _backgroundInterferogramList = new();
+        private List<float> _absorbanceList = new();
 
         public Spectra(byte[] content)
         {
             Content = content;
             for (var i = 0; content.Length > i; i += 4)
             {
-                var adrValue = BitConverter.ToInt32(content, i);
+                var adrValue = BinaryPrimitives.ReadInt32LittleEndian(Content.AsSpan().Slice(i, 4));
                 //Looking for a 32bit address containing  "9E00CC02" or "9E00DE02" - if not found default address is set to 0x408
                 if (adrValue == 46923934 || adrValue == 48103582)
                 {
@@ -55,30 +49,30 @@ namespace SpaInspector
 
         private int GetInt(int adr) => BitConverter.ToInt32(Content, adr);
 
-        public float GetWaveNumberStart() => GetFloat(WaveNumberStart);
+        public float WaveNumberStart => GetFloat(Constants.WaveNumberStart);
 
-        public float GetWaveNumberEnd() => GetFloat(WaveNumberEnd);
+        public float WaveNumberEnd => GetFloat(Constants.WaveNumberEnd);
 
-        public int GetWaveNumberSize() => GetInt(WaveNumberSize);
+        public int WaveNumberSize => GetInt(Constants.WaveNumberSize);
 
-        public float GetGain() => GetFloat(Gain);
+        public float Gain => GetFloat(Constants.Gain);
 
-        public float GetOpticalVelocity() => GetFloat(OpticalVelocity);
+        public float OpticalVelocity => GetFloat(Constants.OpticalVelocity);
 
-        public float GetSignalStrength() => GetFloat(SignalStrength);
+        public float SignalStrength => GetFloat(Constants.SignalStrength);
 
-        public string GetSpectreDescription() => GetString(SpectreDescription);
+        public string SpectreDescription => GetString(Constants.SpectreDescription);
 
-        public string GetFileDescription() => GetString(FileDescription);
+        public string FileDescription => GetString(Constants.FileDescription);
 
-        public void SetFileDescription(string str) => SetString(FileDescription, str);
+        public void SetFileDescription(string str) => SetString(Constants.FileDescription, str);
 
-        public float GetWaveResolution() => (GetWaveNumberEnd() - GetWaveNumberStart()) / GetWaveNumberSize();
+        public float WaveResolution => (WaveNumberEnd - WaveNumberStart) / WaveNumberSize;
 
-        public int GetArbsorbanseInterferogramSize() =>
+        public int AbsorbanceInterferogramSize =>
             _interferogramAbsorbanceEnd == 0 ? _interferogramAbsorbanceEnd : GetInt(_interferogramAbsorbanceEnd);
 
-        public int GetBackgroundInterferogramSize() =>
+        public int BackgroundInterferogramSize =>
             _interferogramBackgroundEnd == 0 ? _interferogramBackgroundEnd : GetInt(_interferogramBackgroundEnd);
 
         private string GetString(int adr)
@@ -116,22 +110,25 @@ namespace SpaInspector
             binaryWriter.Write(Encoding.UTF8.GetBytes(str).AsSpan(0, stringAllocationSize));
         }
 
-        public IList<float> GetAbsorbanceArray()
+        public IList<float> AbsorbanceList
         {
-            List<float> absorbanceArray = new();
-            for (var i = _absorbanceEnd - (GetWaveNumberSize() * 4); _absorbanceEnd > i; i = i + 4)
+            get
             {
-                var absorbanceValue = BinaryPrimitives.ReadSingleLittleEndian(Content.AsSpan().Slice(i, 4));
-                absorbanceArray.Add(absorbanceValue);
-            }
+                if (_absorbanceEnd == 0 || _absorbanceList.Count != 0) return _absorbanceList;
+                for (var i = _absorbanceEnd - (WaveNumberSize * 4); _absorbanceEnd > i; i = i + 4)
+                {
+                    var absorbanceValue = BinaryPrimitives.ReadSingleLittleEndian(Content.AsSpan().Slice(i, 4));
+                    _absorbanceList.Add(absorbanceValue);
+                }
 
-            return absorbanceArray;
+                return _absorbanceList;
+            }
         }
 
-        public bool InsertAbsorbanceArray(IList<float> floatArray)
+        public bool InsertAbsorbanceList(IList<float> floatArray)
         {
-            if (floatArray.Count != GetWaveNumberSize()) return false;
-            for (int n = 0, i = _absorbanceEnd - (GetWaveNumberSize() * 4); _absorbanceEnd > i; i = i + 4, n++)
+            if (floatArray.Count != WaveNumberSize) return false;
+            for (int n = 0, i = _absorbanceEnd - (WaveNumberSize * 4); _absorbanceEnd > i; i = i + 4, n++)
             {
                 BinaryPrimitives.WriteSingleLittleEndian(Content.AsSpan().Slice(i, 4), floatArray[n]);
             }
@@ -139,30 +136,35 @@ namespace SpaInspector
             return true;
         }
 
-        public IList<float> GetArbsorbanseInterferogramArray()
+        public IList<float> AbsorbanceInterferogramList
         {
-            List<float> arbsorbanseInterferogramArray = new();
-            if (_interferogramAbsorbanceEnd == 0) return arbsorbanseInterferogramArray;
-            for (var i = _interferogramAbsorbanceEnd - (GetArbsorbanseInterferogramSize() * 4); _interferogramAbsorbanceEnd > i; i += 4)
+            get
             {
-                var interferogramValue = BitConverter.ToSingle(Content, i);
-                arbsorbanseInterferogramArray.Add(interferogramValue);
-            }
+                if (_interferogramAbsorbanceEnd == 0 || _arbsorbanceInterferogramList.Count != 0) return _arbsorbanceInterferogramList;
+                for (var i = _interferogramAbsorbanceEnd - (AbsorbanceInterferogramSize * 4); _interferogramAbsorbanceEnd > i; i += 4)
+                {
+                    var interferogramValue = BitConverter.ToSingle(Content, i);
+                    _arbsorbanceInterferogramList.Add(interferogramValue);
+                }
 
-            return arbsorbanseInterferogramArray;
+
+                return _arbsorbanceInterferogramList;
+            }
         }
 
-        public IList<float> GetBackgroundInterferogramArray()
+        public IList<float> BackgroundInterferogramList
         {
-            List<float> backgroundInterferogramArray = new();
-            if (_interferogramBackgroundEnd == 0) return backgroundInterferogramArray;
-            for (var i = _interferogramBackgroundEnd - (GetBackgroundInterferogramSize() * 4); _interferogramBackgroundEnd > i; i += 4)
+            get
             {
-                var interferogramValue = BitConverter.ToSingle(Content, i);
-                backgroundInterferogramArray.Add(interferogramValue);
-            }
+                if (_interferogramBackgroundEnd == 0 || _backgroundInterferogramList.Count != 0) return _backgroundInterferogramList;
+                for (var i = _interferogramBackgroundEnd - (BackgroundInterferogramSize * 4); _interferogramBackgroundEnd > i; i += 4)
+                {
+                    var interferogramValue = BitConverter.ToSingle(Content, i);
+                    _backgroundInterferogramList.Add(interferogramValue);
+                }
 
-            return backgroundInterferogramArray;
+                return _backgroundInterferogramList;
+            }
         }
     }
 }

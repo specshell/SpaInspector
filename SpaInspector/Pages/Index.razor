@@ -1,42 +1,49 @@
-﻿@page "/"
+@page "/"
 
-<h1>Hello, world!</h1>
+<h1>SpaInspector</h1>
 
 <p>
   <InputFile OnChange="@OnInputFileChange" multiple/>
 </p>
 
-@if (SpectraList.Count > 0)
+@if (spectraList.Count > 0)
 {
   <h4>Spectras</h4>
 
-  @foreach (var spectra in SpectraList)
+  @foreach (var spectra in spectraList)
   {
-    <div class="card" style="width:30rem;">
-      <div class="card-body">
-        <p>Wave Start: @spectra.GetWaveNumberStart()</p>
-        <p>Wave End: @spectra.GetWaveNumberEnd()</p>
-        <p>Spectra Description: @spectra.GetSpectreDescription()</p>
-        <p>File Description: @spectra.GetFileDescription()</p>
-      </div>
-    </div>
+    <SpectraView Spectra="@spectra"/>
   }
+}
+else if (loading)
+{
+  <p>Loading SPA files...</p>
+}
+else
+{
+  <p>Please select one or more SPA files</p>
 }
 
 @code {
-  private static readonly IList<Spectra> SpectraList = new List<Spectra>();
 
-  private static async Task OnInputFileChange(InputFileChangeEventArgs e)
+  private readonly IList<Spectra> spectraList = new List<Spectra>();
+  private bool loading;
+
+  private async Task OnInputFileChange(InputFileChangeEventArgs e)
   {
     const int maxAllowedFiles = 300;
-
+    spectraList.Clear();
+    loading = true;
     foreach (var spaFile in e.GetMultipleFiles(maxAllowedFiles))
     {
       var stream = spaFile.OpenReadStream();
       var buffer = new byte[stream.Length];
       await stream.ReadAsync(buffer);
       var spectra = new Spectra(buffer);
-      SpectraList.Add(spectra);
+      spectraList.Add(spectra);
     }
+
+    loading = false;
   }
+
 }

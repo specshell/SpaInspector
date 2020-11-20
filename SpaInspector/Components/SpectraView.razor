@@ -1,0 +1,17 @@
+@using Plotly.Blazor
+
+<div class="card" style="width:90rem;">
+  <div class="card-body">
+    <p>Wave Start: @Spectra.WaveNumberStart</p>
+    <p>Wave End: @Spectra.WaveNumberEnd</p>
+    <p>Spectra Description: @Spectra.SpectreDescription</p>
+    <p>File Description: @Spectra.FileDescription</p>
+    <p>Absorbance: @Spectra.AbsorbanceList.Count</p>
+    <p>Absorbance Interferogram: @Spectra.AbsorbanceInterferogramList.Count</p>
+    <p>Background Interferogram: @Spectra.BackgroundInterferogramList.Count</p>
+  </div>
+</div>
+<div class="border rounded-lg m-5 p-1" style="width: 720px;">
+  <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart"/>
+</div>
+
