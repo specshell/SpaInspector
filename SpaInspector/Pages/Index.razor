@@ -1,0 +1,42 @@
+﻿@page "/"
+
+<h1>Hello, world!</h1>
+
+<p>
+  <InputFile OnChange="@OnInputFileChange" multiple/>
+</p>
+
+@if (SpectraList.Count > 0)
+{
+  <h4>Spectras</h4>
+
+  @foreach (var spectra in SpectraList)
+  {
+    <div class="card" style="width:30rem;">
+      <div class="card-body">
+        <p>Wave Start: @spectra.GetWaveNumberStart()</p>
+        <p>Wave End: @spectra.GetWaveNumberEnd()</p>
+        <p>Spectra Description: @spectra.GetSpectreDescription()</p>
+        <p>File Description: @spectra.GetFileDescription()</p>
+      </div>
+    </div>
+  }
+}
+
+@code {
+  private static readonly IList<Spectra> SpectraList = new List<Spectra>();
+
+  private static async Task OnInputFileChange(InputFileChangeEventArgs e)
+  {
+    const int maxAllowedFiles = 300;
+
+    foreach (var spaFile in e.GetMultipleFiles(maxAllowedFiles))
+    {
+      var stream = spaFile.OpenReadStream();
+      var buffer = new byte[stream.Length];
+      await stream.ReadAsync(buffer);
+      var spectra = new Spectra(buffer);
+      SpectraList.Add(spectra);
+    }
+  }
+}
