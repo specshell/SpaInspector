@@ -16,11 +16,11 @@ jobs:
       with:
         dotnet-version: '5.0'
 
+    - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
+      run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' */wwwroot/index.html
+
     - name: Publish Blazor project
       run: dotnet publish -c Release -o release --nologo
-
-    - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
-      run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' release/wwwroot/index.html
 
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: copy index.html to 404.html
