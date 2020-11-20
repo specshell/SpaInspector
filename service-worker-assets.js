@@ -1,10 +1,6 @@
 ﻿self.assetsManifest = {
   "assets": [
     {
-      "hash": "sha256-yUvjCbVlJiA5LDOTltbtZcJPBP9\/p4P469idZ8vJC1A=",
-      "url": "bob.png"
-    },
-    {
       "hash": "sha256-SO\/fuIIWUxoIu1OABrOpK5n\/AvzxJcg+0H3PT1eutAE=",
       "url": "css\/app.css"
     },
@@ -61,7 +57,7 @@
       "url": "icon-512.png"
     },
     {
-      "hash": "sha256-W3qgeje4Oy\/t1YB5pUBerM1iuyaj6f79WmHk7FTcDNc=",
+      "hash": "sha256-snoTSSJmJFW1jKMJwcrVUHqLMvFBA2xdffSyvYY7Btk=",
       "url": "index.html"
     },
     {
@@ -269,5 +265,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "DFBaeu72"
+  "version": "\/Cx+GAlH"
 };
