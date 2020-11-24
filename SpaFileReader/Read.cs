@@ -32,22 +32,23 @@ namespace SpaFileReader
             /*
                 headers / metadata start from dec 304 and goes till dec 496
                     key 2 at hex 130, dec 304 = headers
-                    key 106 at hex 140, dec 320 = ?? seems like position and byte size (optional) The content at hex 33C, 828 dec makes no sense.
-                    key 105 at hex 150, dec 336 = ?? end of ?? (optional)
+                    key 106 at hex 140, dec 320 = start of Settings Info and size.
+                    key 105 at hex 150, dec 336 = end of Settings Info
                     key 128 at hex 140, dec 320 = ??
-                    key 105 at hex 150 dec 352 = ??
                     key 27 at hex 170, dec 368 = History
                     key 3 at hex 180, dec 384 = Unit Intensities (absorbance)
 
                 This key seems possible to repeat up to three times
-                    key 130 at hex 190, dec 400 = ??
+                    key 130 at hex 190, dec 400 = one of them is unit end
+                                                = second is file exp position
+                                                = third is ATR correction (optional)
 
                 These values contain the interferograms and are optional
-                   key 103 and 101 are paired, is this is background or unit interferogram???
+                   key 103 and 101 are paired, is the background interferogram
                    key 103 start of interferogram and byte size
                    key 101 end of interferogram
 
-                   key 102 and 100 are paired, is this is background or unit interferogram???
+                   key 102 and 100 are paired, is the unit interferogram
                    key 102 start off interferogram and byte size
                    key 100 end of interferogram
             */
@@ -71,16 +72,21 @@ namespace SpaFileReader
                         _binaryReader.Position(pos + 2);
                         var historyPos = _binaryReader.ReadUInt32();
                         _binaryReader.Position(historyPos);
-                        var history = _binaryReader.ReadNullTerminatedString();
-                        _builder.History(history);
-                        _binaryReader.Position(pos);
+                        _builder.History(_binaryReader.ReadNullTerminatedString());
+                        break;
+                    case 106:
+                        _binaryReader.Position(pos + 2);
+                        var settingsInfoPos = _binaryReader.ReadUInt32();
+                        _binaryReader.Position(settingsInfoPos + 44);
+                        _builder.Gain(_binaryReader.ReadSingle())
+                            .OpticalVelocity(_binaryReader.ReadSingle());
                         break;
                     case 103:
-                        // Which is background and which is Unit Interferogram?
+                        // Background Interferogram
                         _builder.BackgroundInterferogram(ReadIntensities(pos));
                         break;
                     case 102:
-                        // Which is background and which is Unit Interferogram?
+                        // Unit Interferogram
                         _builder.UnitInterferogram(ReadIntensities(pos));
                         break;
                 }
@@ -122,6 +128,7 @@ namespace SpaFileReader
 //   lastx_pos = info_pos + 20
 //   number of scan pos = info_pos + 36;
 //   number of background scan pos = info_pos + 52;
+//   Signal Strength = info_pos + 72
 
             _binaryReader.Position(infoPos + 4);
             var unitSize = _binaryReader.ReadUInt32();
@@ -210,10 +217,14 @@ namespace SpaFileReader
             var numberOfScan = _binaryReader.ReadUInt32();
             _binaryReader.Position(infoPos + 52);
             var numberOfBackgroundScan = _binaryReader.ReadUInt32();
+            _binaryReader.Position(infoPos + 72);
+            var signalStrength = _binaryReader.ReadSingle();
 
-            _builder.UnitSize(unitSize).XUnits(xunits).XTitle(xtitle)
-                .Unit(units).UnitTitle(title).FirstX(firstx)
-                .LastX(lastx).NumberOfScan(numberOfScan).NumberOfBackgroundScan(numberOfBackgroundScan);
+            _builder.UnitSize(unitSize)
+                .XUnits(xunits).XTitle(xtitle)
+                .Unit(units).UnitTitle(title)
+                .FirstX(firstx).LastX(lastx).SignalStrength(signalStrength)
+                .NumberOfScan(numberOfScan).NumberOfBackgroundScan(numberOfBackgroundScan);
 
             return new Headers
             {

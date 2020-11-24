@@ -19,6 +19,10 @@ namespace SpaFileReader
         private float[] _unitIntensities = Array.Empty<float>();
         private float[] _unitInterferogram = Array.Empty<float>();
         private float[] _backgroundInterferogram = Array.Empty<float>();
+        private float _signalStrength;
+        private float _gain;
+        private float _opticalVelocity;
+
         public SpaBuilder UnitSize(uint unitSize)
         {
             _unitSize = unitSize;
@@ -109,6 +113,24 @@ namespace SpaFileReader
             return this;
         }
 
+        public SpaBuilder SignalStrength(float signalStrength)
+        {
+            _signalStrength = signalStrength;
+            return this;
+        }
+
+        public SpaBuilder Gain(in float gain)
+        {
+            _gain = gain;
+            return this;
+        }
+
+        public SpaBuilder OpticalVelocity(in float opticalVelocity)
+        {
+            _opticalVelocity = opticalVelocity;
+            return this;
+        }
+
         public Spa Build()
         {
             return new()
@@ -129,7 +151,10 @@ namespace SpaFileReader
                     FirstX = _firstX,
                     LastX = _lastX,
                     NumberOfScan = _numberOfScan,
-                    NumberOfBackgroundScan = _numberOfBackgroundScan
+                    NumberOfBackgroundScan = _numberOfBackgroundScan,
+                    SignalStrength = _signalStrength,
+                    Gain = _gain,
+                    OpticalVelocity = _opticalVelocity,
                 }
             };
         }

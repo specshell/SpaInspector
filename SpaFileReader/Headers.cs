@@ -14,5 +14,8 @@ namespace SpaFileReader
         public uint NumberOfScan { get; init; }
         public uint NumberOfBackgroundScan { get; init; }
         public float Resolution => MathF.Abs((LastX - FirstX) / UnitSize);
+        public float SignalStrength { get; set; }
+        public float Gain { get; set; }
+        public float OpticalVelocity { get; set; }
     }
 }
