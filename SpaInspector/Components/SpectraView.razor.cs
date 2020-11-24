@@ -62,7 +62,7 @@ namespace SpaInspector.Components
                     new()
                     {
                         AutoMargin = false,
-                        Ticks = TicksEnum.Outside,
+                        Ticks = TicksEnum.Empty,
                         Tick0 = 0,
                         DTick = unitIntensities.Max() < 1.0f ? 0.1 : 1,
                     }
