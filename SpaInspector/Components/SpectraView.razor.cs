@@ -7,13 +7,14 @@ using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.LayoutLib.XAxisLib;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.ScatterLib;
+using SpaFileReader;
 using TicksEnum = Plotly.Blazor.LayoutLib.YAxisLib.TicksEnum;
 
 namespace SpaInspector.Components
 {
     public partial class SpectraView
     {
-        [Parameter] public Spectra Spectra { get; set; }
+        [Parameter] public Spa Spa { get; set; }
 
         public PlotlyChart Chart;
         public Config Config = new();
@@ -25,11 +26,12 @@ namespace SpaInspector.Components
 
         protected override void OnInitialized()
         {
-            var absorbanceList = Spectra.AbsorbanceList;
+            var unitIntensities = Spa.UnitIntensities;
+            if (unitIntensities.Length == 0) return;
 
             var waves = new List<object>();
 
-            for (var i = absorbanceList.Count - 1; i >= 0; i--)
+            for (var i = unitIntensities.Length - 1; i >= 0; i--)
             {
                 waves.Add(i * Constants.SpectraResolution + 700);
             }
@@ -40,7 +42,7 @@ namespace SpaInspector.Components
                 {
                     Name = "ScatterTrace",
                     Mode = ModeFlag.Lines | ModeFlag.Markers,
-                    Y = absorbanceList.Cast<object>().ToArray(),
+                    Y = unitIntensities.Cast<object>().ToArray(),
                     X = waves,
                     Marker = new Marker
                     {
@@ -49,7 +51,7 @@ namespace SpaInspector.Components
                 }
             };
 
-            Layout = new()
+            Layout = new Layout()
             {
                 XAxis = new List<XAxis>
                 {
@@ -66,7 +68,7 @@ namespace SpaInspector.Components
                         AutoMargin = false,
                         Ticks = TicksEnum.Outside,
                         Tick0 = 0,
-                        DTick = absorbanceList.Max() < 1.0f ? 0.1 : 1,
+                        DTick = unitIntensities.Max() < 1.0f ? 0.1 : 1,
                     }
                 },
                 AutoSize = false,

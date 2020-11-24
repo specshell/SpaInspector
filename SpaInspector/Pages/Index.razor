@@ -1,4 +1,6 @@
 @page "/"
+@using SpaFileReader
+@using System.IO
 
 <h1>SpaInspector</h1>
 
@@ -6,13 +8,13 @@
   <InputFile OnChange="@OnInputFileChange" multiple/>
 </p>
 
-@if (spectraList.Count > 0)
+@if (spaList.Count > 0)
 {
   <h4>Spectras</h4>
 
-  @foreach (var spectra in spectraList)
+  @foreach (var spa in spaList)
   {
-    <SpectraView Spectra="@spectra"/>
+    <SpectraView Spa="@spa"/>
   }
 }
 else if (loading)
@@ -26,23 +28,34 @@ else
 
 @code {
 
-  private readonly IList<Spectra> spectraList = new List<Spectra>();
+  private readonly IList<Spa> spaList = new List<Spa>();
   private bool loading;
+
+  static async IAsyncEnumerable<SpaFileReader.Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
+  {
+    foreach (var spaFile in list)
+    {
+      var memoryStream = new MemoryStream();
+      await using (var stream = spaFile.OpenReadStream())
+      {
+        await stream.CopyToAsync(memoryStream);
+      }
+      memoryStream.Position = 0;
+      var spa = memoryStream.ReadSpa();
+      yield return spa;
+    }
+  }
 
   private async Task OnInputFileChange(InputFileChangeEventArgs e)
   {
     const int maxAllowedFiles = 300;
-    spectraList.Clear();
+    spaList.Clear();
     loading = true;
-    foreach (var spaFile in e.GetMultipleFiles(maxAllowedFiles))
-    {
-      var stream = spaFile.OpenReadStream();
-      var buffer = new byte[stream.Length];
-      await stream.ReadAsync(buffer);
-      var spectra = new Spectra(buffer);
-      spectraList.Add(spectra);
-    }
 
+    await foreach (var spa in GetSpectraFromFiles(e.GetMultipleFiles(maxAllowedFiles)))
+    {
+      spaList.Add(spa);
+    }
     loading = false;
   }
 

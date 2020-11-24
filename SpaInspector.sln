@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspector", "SpaInspector\SpaInspector.csproj", "{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader", "SpaFileReader\SpaFileReader.csproj", "{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Tests", "SpaFileReader.Tests\SpaFileReader.Tests.csproj", "{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}.Release|Any CPU.Build.0 = Release|Any CPU
+		{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,16 +2,20 @@
 
 <div class="card" style="width:90rem;">
   <div class="card-body">
-    <p>Wave Start: @Spectra.WaveNumberStart</p>
-    <p>Wave End: @Spectra.WaveNumberEnd</p>
-    <p>Spectra Description: @Spectra.SpectreDescription</p>
-    <p>File Description: @Spectra.FileDescription</p>
-    <p>Absorbance: @Spectra.AbsorbanceList.Count</p>
-    <p>Absorbance Interferogram: @Spectra.AbsorbanceInterferogramList.Count</p>
-    <p>Background Interferogram: @Spectra.BackgroundInterferogramList.Count</p>
+    <p>Wave Start: @Spa.Headers.FirstX</p>
+    <p>Wave End: @Spa.Headers.LastX</p>
+    <p>Wave Resolution: @Spa.Headers.Resolution</p>
+    <p>Wave Constant Resolution: @Constants.SpectraResolution</p>
+    <p>Spectra Description: @Spa.Title</p>
+    <p>File Description:<br /><pre>@Spa.History</pre></p>
+    <p>@Spa.Headers.UnitTitle size: @Spa.UnitIntensities.Length</p>
+    <p>@Spa.Headers.UnitTitle Interferogram size: @Spa.UnitInterferogram.Length</p>
+    <p>Background Interferogram size: @Spa.BackgroundInterferogram.Length</p>
   </div>
 </div>
-<div class="border rounded-lg m-5 p-1" style="width: 720px;">
-  <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart"/>
-</div>
-
+@if (Data != null)
+{
+  <div class="border rounded-lg m-5 p-1" style="width: 720px;">
+    <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart"/>
+  </div>
+}
