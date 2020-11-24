@@ -33,7 +33,7 @@ namespace SpaInspector.Components
 
             for (var i = unitIntensities.Length - 1; i >= 0; i--)
             {
-                waves.Add(i * Constants.SpectraResolution + 700);
+                waves.Add(i * Spa.Headers.Resolution + Spa.Headers.LastX);
             }
 
             Data = new List<ITrace>
@@ -41,13 +41,9 @@ namespace SpaInspector.Components
                 new Scatter
                 {
                     Name = "ScatterTrace",
-                    Mode = ModeFlag.Lines | ModeFlag.Markers,
+                    Mode = ModeFlag.Lines,
                     Y = unitIntensities.Cast<object>().ToArray(),
                     X = waves,
-                    Marker = new Marker
-                    {
-                        Size = 2
-                    },
                 }
             };
 
@@ -57,8 +53,8 @@ namespace SpaInspector.Components
                 {
                     new()
                     {
-                        AutoRange = AutoRangeEnum.Reversed,
-                        Range = new List<object> {700, 4000},
+                        AutoRange = AutoRangeEnum.False,
+                        Range = new List<object> {Spa.Headers.FirstX, Spa.Headers.LastX},
                     }
                 },
                 YAxis = new List<YAxis>
