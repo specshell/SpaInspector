@@ -173,7 +173,7 @@
       "url": "_framework\/SpaFileReader.dll"
     },
     {
-      "hash": "sha256-KVuyRUfe6UT6RAZE5wJsSN2a8uC6arRT8XpVqXltI3o=",
+      "hash": "sha256-mmWFGupUE24Agoj\/Hr5ZEF8WPBwQJOOPvXcZeX51Lfw=",
       "url": "_framework\/SpaInspector.dll"
     },
     {
@@ -261,11 +261,11 @@
       "url": "_framework\/System.Text.RegularExpressions.dll"
     },
     {
-      "hash": "sha256-VlfXbBET1vTbycQnPot5fBU8wAoBzvvfZU8mUM\/Vgz4=",
+      "hash": "sha256-WppGrcmXUP5Lj4ToEvvn9JS6scQA3jR3BGjIQHOuHmE=",
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
-      "hash": "sha256-m6ZD\/tG3\/vxqWOqBXHozyk0rxbp5RPIAI10WZP0Ian8=",
+      "hash": "sha256-Gck3ZCiS5DFrrr3feKwQGY\/WyihN9apMvE6bWSFjOWA=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -273,5 +273,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "v1AevOlP"
+  "version": "+TLeRf39"
 };
