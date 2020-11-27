@@ -6,7 +6,7 @@ using Plotly.Blazor;
 using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.LayoutLib.XAxisLib;
 using Plotly.Blazor.Traces;
-using Plotly.Blazor.Traces.ScatterLib;
+using Plotly.Blazor.Traces.ScatterGlLib;
 using SpaFileReader;
 using TicksEnum = Plotly.Blazor.LayoutLib.YAxisLib.TicksEnum;
 
@@ -38,12 +38,16 @@ namespace SpaInspector.Components
 
             Data = new List<ITrace>
             {
-                new Scatter
+                new ScatterGl()
                 {
                     Name = "ScatterTrace",
                     Mode = ModeFlag.Lines,
                     Y = unitIntensities.Cast<object>().ToArray(),
                     X = waves,
+                    Line = new Line
+                    {
+                        Width = 1.5m
+                    }
                 }
             };
 
