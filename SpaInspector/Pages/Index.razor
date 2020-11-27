@@ -1,6 +1,7 @@
 @page "/"
 @using SpaFileReader
 @using System.IO
+@using System.Globalization
 
 <h1>SpaInspector</h1>
 
@@ -14,8 +15,7 @@
 
   @foreach (var spa in spaList)
   {
-    <SpectraView Spa="@spa"/>
-  }
+    <SpectraView Spa="@spa"/>  }
 }
 else if (loading)
 {
@@ -31,9 +31,11 @@ else
   private readonly IList<Spa> spaList = new List<Spa>();
   private bool loading;
 
-  static async IAsyncEnumerable<SpaFileReader.Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
+  async IAsyncEnumerable<Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
   {
-    foreach (var spaFile in list)
+    var spaFiles = list.Where(f => f.Name.EndsWith(".spa", true, CultureInfo.InvariantCulture)).ToList();
+    if (!spaFiles.Any()) yield break;
+    foreach (var spaFile in spaFiles)
     {
       var memoryStream = new MemoryStream();
       await using (var stream = spaFile.OpenReadStream())
