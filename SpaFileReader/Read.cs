@@ -11,32 +11,38 @@ namespace SpaFileReader
         private static readonly DateTime SpaFileEpoch = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
         private BinaryReader _binaryReader;
         private SpaBuilder _builder;
+        private SpectrumBuilder _spectrumBuilder;
 
         public Read(Stream stream)
         {
             _binaryReader = new BinaryReader(stream);
             _builder = new SpaBuilder();
+            _spectrumBuilder = new SpectrumBuilder();
         }
 
         public Spa ReadBinaryToSpa()
         {
             _binaryReader.Position(30);
-            var specTitle = _binaryReader.ReadNullTerminatedString();
-            _builder.Title(specTitle);
-            _binaryReader.Position(296);
+            var fileTitle = _binaryReader.ReadNullTerminatedString();
+            _builder.FileTitle(fileTitle);
+
+            // Read out number of lines in header
+            _binaryReader.Position(294);
+            var numberOfKeys = _binaryReader.ReadInt16();
 
             // days since 31/12/1899, 00:00
             var timestamp = _binaryReader.ReadUInt32();
             var dateTime = SpaFileEpoch.Add(TimeSpan.FromSeconds(timestamp));
-            _builder.DateTime(dateTime);
+            _builder.FileDateTime(dateTime);
             /*
                 headers / metadata start from dec 304 and goes till dec 496
-                    key 2 at hex 130, dec 304 = headers
-                    key 106 at hex 140, dec 320 = start of Settings Info and size.
-                    key 105 at hex 150, dec 336 = end of Settings Info
-                    key 128 at hex 140, dec 320 = ??
-                    key 27 at hex 170, dec 368 = History
-                    key 3 at hex 180, dec 384 = Unit Intensities (absorbance)
+                    key 2 = headers
+                    key 3 = Unit Intensities (absorbance)
+                    key 27 = History
+                    key 106 = start of Settings Info and size.
+                    key 105 = end of Settings Info
+                    key 107 = Spectra Title and timestamp
+                    key 128 = ??
 
                 This key seems possible to repeat up to three times
                     key 130 at hex 190, dec 400 = one of them is unit end
@@ -53,45 +59,58 @@ namespace SpaFileReader
                    key 100 end of interferogram
             */
 
-            var pos = 304;
-
-            byte key = 1;
-            while (key != 0)
+            // +1 to include an null key
+            for (int i = 0, pos = 304; i < numberOfKeys+1; i++, pos += 16)
             {
                 _binaryReader.Position(pos);
-                key = _binaryReader.ReadByte();
+                var key = _binaryReader.ReadByte();
+                if (i != 0 && (key == 2 || key == 0))
+                {
+                    _builder.Spectrum(_spectrumBuilder.Build());
+                    _builder.Build();
+                    _spectrumBuilder = new SpectrumBuilder();
+                }
                 switch (key)
                 {
                     case 2:
                         ReadHeaders(pos);
                         break;
                     case 3:
-                        _builder.UnitIntensities(ReadIntensities(pos));
+                        _spectrumBuilder.UnitIntensities(ReadIntensities(pos));
                         break;
                     case 27:
                         _binaryReader.Position(pos + 2);
                         var historyPos = _binaryReader.ReadUInt32();
                         _binaryReader.Position(historyPos);
-                        _builder.History(_binaryReader.ReadNullTerminatedString());
+                        _spectrumBuilder.History(_binaryReader.ReadNullTerminatedString());
                         break;
                     case 106:
                         _binaryReader.Position(pos + 2);
                         var settingsInfoPos = _binaryReader.ReadUInt32();
                         _binaryReader.Position(settingsInfoPos + 44);
-                        _builder.Gain(_binaryReader.ReadSingle())
+                        _spectrumBuilder.Gain(_binaryReader.ReadSingle())
                             .OpticalVelocity(_binaryReader.ReadSingle());
                         break;
-                    case 103:
-                        // Background Interferogram
-                        _builder.BackgroundInterferogram(ReadIntensities(pos));
+                    case 107:
+                        _binaryReader.Position(pos + 2);
+                        var spectraTitlePos = _binaryReader.ReadUInt32();
+                        _binaryReader.Position(spectraTitlePos);
+                        var name = _binaryReader.ReadNullTerminatedString();
+                        _spectrumBuilder.Name(name);
+                        _binaryReader.Position(spectraTitlePos + 256);
+                        var spectraTimestamp = _binaryReader.ReadUInt32();
+                        var spectraDateTime = SpaFileEpoch.Add(TimeSpan.FromSeconds(spectraTimestamp));
+                        _spectrumBuilder.DateTime(spectraDateTime);
                         break;
-                    case 102:
-                        // Unit Interferogram
-                        _builder.UnitInterferogram(ReadIntensities(pos));
-                        break;
+                    // case 103:
+                    //     // Background Interferogram
+                    //     _builder.BackgroundInterferogram(ReadIntensities(pos));
+                    //     break;
+                    // case 102:
+                    //     // Unit Interferogram
+                    //     _builder.UnitInterferogram(ReadIntensities(pos));
+                    //     break;
                 }
-
-                pos += 16;
             }
 
             _binaryReader.Close();
@@ -220,7 +239,7 @@ namespace SpaFileReader
             _binaryReader.Position(infoPos + 72);
             var signalStrength = _binaryReader.ReadSingle();
 
-            _builder.UnitSize(unitSize)
+            _spectrumBuilder.UnitSize(unitSize)
                 .XUnits(xunits).XTitle(xtitle)
                 .Unit(units).UnitTitle(title)
                 .FirstX(firstx).LastX(lastx).SignalStrength(signalStrength)

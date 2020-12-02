@@ -38,7 +38,7 @@ else
     foreach (var spaFile in spaFiles)
     {
       var memoryStream = new MemoryStream();
-      await using (var stream = spaFile.OpenReadStream())
+      await using (var stream = spaFile.OpenReadStream(maxAllowedSize: 20971520L))
       {
         await stream.CopyToAsync(memoryStream);
       }

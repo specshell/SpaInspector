@@ -17,5 +17,7 @@ namespace SpaFileReader
         public float SignalStrength { get; set; }
         public float Gain { get; set; }
         public float OpticalVelocity { get; set; }
+        public string Name { get; set; }
+        public DateTime DateTime { get; set; }
     }
 }

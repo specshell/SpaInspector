@@ -1,133 +1,29 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SpaFileReader
 {
     public class SpaBuilder
     {
-        private uint _unitSize;
-        private string _xUnits;
-        private string _xTitle;
-        private string _unit;
-        private string _unitTitle;
-        private float _firstX;
-        private float _lastX;
-        private uint _numberOfScan;
-        private uint _numberOfBackgroundScan;
-        private string _title;
-        private DateTime _dateTime;
-        private string _history;
-        private float[] _unitIntensities = Array.Empty<float>();
-        private float[] _unitInterferogram = Array.Empty<float>();
-        private float[] _backgroundInterferogram = Array.Empty<float>();
-        private float _signalStrength;
-        private float _gain;
-        private float _opticalVelocity;
+        private string _fileTitle;
+        private DateTime _fileDateTime;
+        private readonly List<Spectrum> _spectrums = new();
 
-        public SpaBuilder UnitSize(uint unitSize)
+        public SpaBuilder FileTitle(string fileTitle)
         {
-            _unitSize = unitSize;
+            _fileTitle = fileTitle;
             return this;
         }
 
-        public SpaBuilder XUnits(string xUnits)
+        public SpaBuilder FileDateTime(DateTime fileDateTime)
         {
-            _xUnits = xUnits;
+            _fileDateTime = fileDateTime;
             return this;
         }
 
-        public SpaBuilder XTitle(string xTitle)
+        public SpaBuilder Spectrum(Spectrum spectrum)
         {
-            _xTitle = xTitle;
-            return this;
-        }
-
-        public SpaBuilder Unit(string unit)
-        {
-            _unit = unit;
-            return this;
-        }
-
-        public SpaBuilder UnitTitle(string unitTitle)
-        {
-            _unitTitle = unitTitle;
-            return this;
-        }
-
-        public SpaBuilder FirstX(float firstX)
-        {
-            _firstX = firstX;
-            return this;
-        }
-
-        public SpaBuilder LastX(float lastX)
-        {
-            _lastX = lastX;
-            return this;
-        }
-
-        public SpaBuilder NumberOfScan(uint numberOfScan)
-        {
-            _numberOfScan = numberOfScan;
-            return this;
-        }
-
-        public SpaBuilder NumberOfBackgroundScan(uint numberOfBackgroundScan)
-        {
-            _numberOfBackgroundScan = numberOfBackgroundScan;
-            return this;
-        }
-
-        public SpaBuilder Title(string title)
-        {
-            _title = title;
-            return this;
-        }
-
-        public SpaBuilder DateTime(DateTime dateTime)
-        {
-            _dateTime = dateTime;
-            return this;
-        }
-
-        public SpaBuilder History(string history)
-        {
-            _history = history;
-            return this;
-        }
-
-        public SpaBuilder UnitIntensities(float[] unitIntensities)
-        {
-            _unitIntensities = unitIntensities;
-            return this;
-        }
-
-        public SpaBuilder UnitInterferogram(float[] unitInterferogram)
-        {
-            _unitInterferogram = unitInterferogram;
-            return this;
-        }
-
-        public SpaBuilder BackgroundInterferogram(float[] backgroundInterferogram)
-        {
-            _backgroundInterferogram = backgroundInterferogram;
-            return this;
-        }
-
-        public SpaBuilder SignalStrength(float signalStrength)
-        {
-            _signalStrength = signalStrength;
-            return this;
-        }
-
-        public SpaBuilder Gain(in float gain)
-        {
-            _gain = gain;
-            return this;
-        }
-
-        public SpaBuilder OpticalVelocity(in float opticalVelocity)
-        {
-            _opticalVelocity = opticalVelocity;
+            _spectrums.Add(spectrum);
             return this;
         }
 
@@ -135,27 +31,9 @@ namespace SpaFileReader
         {
             return new()
             {
-                DateTime = _dateTime,
-                History = _history,
-                UnitIntensities = _unitIntensities,
-                UnitInterferogram = _unitInterferogram,
-                BackgroundInterferogram = _backgroundInterferogram,
-                Title = _title,
-                Headers = new Headers
-                {
-                    UnitSize = _unitSize,
-                    XUnits = _xUnits,
-                    XTitle = _xTitle,
-                    Unit = _unit,
-                    UnitTitle = _unitTitle,
-                    FirstX = _firstX,
-                    LastX = _lastX,
-                    NumberOfScan = _numberOfScan,
-                    NumberOfBackgroundScan = _numberOfBackgroundScan,
-                    SignalStrength = _signalStrength,
-                    Gain = _gain,
-                    OpticalVelocity = _opticalVelocity,
-                }
+                FileDateTime = _fileDateTime,
+                FileTitle = _fileTitle,
+                Spectrums = _spectrums
             };
         }
     }
