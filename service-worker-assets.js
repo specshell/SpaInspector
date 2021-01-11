@@ -105,7 +105,7 @@
       "url": "_content\/Plotly.Blazor\/plotly-interop.js"
     },
     {
-      "hash": "sha256-vR95TSQS4q29PSOaQD2Wk5W\/OJIhSJc3923+rcXpilA=",
+      "hash": "sha256-i1J+Z0EtnwB\/gZSAMJQESV01TkaQ+0zvEwYtn3L6zXM=",
       "url": "_content\/Plotly.Blazor\/plotly-latest.min.js"
     },
     {
@@ -165,7 +165,7 @@
       "url": "_framework\/Microsoft.JSInterop.WebAssembly.dll"
     },
     {
-      "hash": "sha256-nm6KduErF+OUChZAm9M+0ZYn+9PoE0gryw3ppBTxxv8=",
+      "hash": "sha256-wHCCb7HUqrLXqDMEQwd0GmAIVldcEUoINmckuy9iErc=",
       "url": "_framework\/Plotly.Blazor.dll"
     },
     {
@@ -177,7 +177,7 @@
       "url": "_framework\/SpaFileReader.dll"
     },
     {
-      "hash": "sha256-IA25PJXnrGk4kEJkReMwrE1\/c1vTnMkJXBPatOXy66M=",
+      "hash": "sha256-xRFV1CvfzjFNJSOPvppYsDzXkiY+CQM9H\/ZCZujK8rg=",
       "url": "_framework\/SpaInspector.dll"
     },
     {
@@ -269,7 +269,7 @@
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
-      "hash": "sha256-E16ppjjp3aoZ5qHCfYb0MxVsK2e+7TRzJBihyAXqYDk=",
+      "hash": "sha256-HQ\/auZN0\/9chwgITGjoXL68Id\/0YHiBXG+63f5zvjMk=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -277,5 +277,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "2mUOoqPP"
+  "version": "3hnU7mcB"
 };
