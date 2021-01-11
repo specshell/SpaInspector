@@ -7,24 +7,19 @@ on:
 
 jobs:
   deploy-to-github-pages:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
 
-    - name: Setup .NET 5
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '5.0'
-
     - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
       run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' */wwwroot/index.html
+    
+    # copy index.html to 404.html to serve the same file when a file is not found
+    - name: copy index.html to 404.html
+      run: cp SpaInspector/wwwroot/index.html SpaInspector/wwwroot/404.html
 
     - name: Publish Blazor project
       run: dotnet publish -c Release -o release --nologo
-
-    # copy index.html to 404.html to serve the same file when a file is not found
-    - name: copy index.html to 404.html
-      run: cp release/wwwroot/index.html release/wwwroot/404.html
 
     # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
     - name: Add .nojekyll file
