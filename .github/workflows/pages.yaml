@@ -16,18 +16,17 @@ jobs:
     
     # copy index.html to 404.html to serve the same file when a file is not found
     - name: copy index.html to 404.html
-      run: cp SpaInspector/wwwroot/index.html SpaInspector/wwwroot/404.html
+      run: cp ${{ github.event.repository.name }}/wwwroot/index.html ${{ github.event.repository.name }}/wwwroot/404.html
+      
+    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+    - name: Add .nojekyll file
+      run: touch ${{ github.event.repository.name }}/wwwroot/.nojekyll
 
     - name: Publish Blazor project
       run: dotnet publish -c Release -o release --nologo
 
-    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
-    - name: Add .nojekyll file
-      run: touch release/wwwroot/.nojekyll
-
     - name: Commit wwwroot to GitHub Pages
       uses: JamesIves/github-pages-deploy-action@4.1.0
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: release/wwwroot
+        branch: gh-pages
+        folder: release/wwwroot
