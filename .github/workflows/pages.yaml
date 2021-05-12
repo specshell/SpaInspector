@@ -9,7 +9,7 @@ jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2.3.4
 
     - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
       run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' */wwwroot/index.html
