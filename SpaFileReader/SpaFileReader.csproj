@@ -4,4 +4,57 @@
         <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <PropertyGroup>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <IncludeSymbols>true</IncludeSymbols>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <Nullable>enable</Nullable>
+        <Authors>Spechell</Authors>
+        <Company>Specshell</Company>
+        <Owners>Specshell</Owners>
+        <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)) Specshell. All rights reserved</Copyright>
+        <TreatWarningsAsErrors Condition="$(TreatWarningsAsErrors) == ''">true</TreatWarningsAsErrors>
+        <LangVersion Condition="$(LangVersion) == ''">9.0</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(RELEASE)' == 'true'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="$(IsPackable) == false">
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    </PropertyGroup>
+
+    <!-- Workaround for https://github.com/GitTools/GitVersion/issues/1031 -->
+    <PropertyGroup Condition=" '$(GitVersion_FullSemVer)' != ''">
+        <GetVersion>false</GetVersion>
+        <WriteVersionInfoToBuildLog>false</WriteVersionInfoToBuildLog>
+        <UpdateAssemblyInfo>false</UpdateAssemblyInfo>
+
+        <Version>$(GitVersion_FullSemVer)</Version>
+        <VersionPrefix>$(GitVersion_MajorMinorPatch)</VersionPrefix>
+        <VersionSuffix>$(GitVersion_PreReleaseTag)</VersionSuffix>
+        <PackageVersion>$(GitVersion_FullSemVer)</PackageVersion>
+        <InformationalVersion Condition=" '$(InformationalVersion)' == '' ">$(GitVersion_InformationalVersion)</InformationalVersion>
+        <AssemblyVersion Condition=" '$(AssemblyVersion)' == '' ">$(GitVersion_AssemblySemVer)</AssemblyVersion>
+        <FileVersion Condition=" '$(FileVersion)' == '' ">$(GitVersion_AssemblySemFileVer)</FileVersion>
+        <RepositoryBranch Condition=" '$(RepositoryBranch)' == '' ">$(GitVersion_BranchName)</RepositoryBranch>
+        <RepositoryCommit Condition=" '$(RepositoryCommit)' == '' ">$(GitVersion_Sha)</RepositoryCommit>
+    </PropertyGroup>
+
+    <Target Name="ProjectDefaultsUpdateNuspec" BeforeTargets="GenerateNuspec" Condition="$(GeneratePackageOnBuild)">
+        <Warning Text="No 'ScmRepositoryUrl' defined." Condition="'$(ScmRepositoryUrl)' == '' And $(IsPackable) == true And $(Configuration) == 'Release'" />
+        <PropertyGroup Condition="$(ScmRepositoryUrl) != ''">
+            <PackageProjectUrl Condition="$(PackageProjectUrl) == ''">$(ScmRepositoryUrl.Replace('.git', ''))</PackageProjectUrl>
+        </PropertyGroup>
+    </Target>
+
 </Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SpaFileReader
+namespace SpaInspectorReader
 {
     public class SpaBuilder
     {
@@ -95,21 +95,21 @@ namespace SpaFileReader
             return this;
         }
 
-        public SpaBuilder UnitIntensities(float[] unitIntensities)
+        public SpaBuilder UnitIntensities(Span<float> unitIntensities)
         {
-            _unitIntensities = unitIntensities;
+            _unitIntensities = unitIntensities.ToArray();
             return this;
         }
 
-        public SpaBuilder UnitInterferogram(float[] unitInterferogram)
+        public SpaBuilder UnitInterferogram(Span<float> unitInterferogram)
         {
-            _unitInterferogram = unitInterferogram;
+            _unitInterferogram = unitInterferogram.ToArray();
             return this;
         }
 
-        public SpaBuilder BackgroundInterferogram(float[] backgroundInterferogram)
+        public SpaBuilder BackgroundInterferogram(Span<float> backgroundInterferogram)
         {
-            _backgroundInterferogram = backgroundInterferogram;
+            _backgroundInterferogram = backgroundInterferogram.ToArray();
             return this;
         }
 
@@ -146,8 +146,8 @@ namespace SpaFileReader
                     UnitSize = _unitSize,
                     XUnits = _xUnits,
                     XTitle = _xTitle,
-                    Unit = _unit,
-                    UnitTitle = _unitTitle,
+                    YUnit = _unit,
+                    YUnitTitle = _unitTitle,
                     FirstX = _firstX,
                     LastX = _lastX,
                     NumberOfScan = _numberOfScan,

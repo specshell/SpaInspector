@@ -7,7 +7,7 @@ using Plotly.Blazor.LayoutLib;
 using Plotly.Blazor.LayoutLib.XAxisLib;
 using Plotly.Blazor.Traces;
 using Plotly.Blazor.Traces.ScatterGlLib;
-using SpaFileReader;
+using SpaInspectorReader;
 using TicksEnum = Plotly.Blazor.LayoutLib.YAxisLib.TicksEnum;
 
 namespace SpaInspector.Components

@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 
-namespace SpaFileReader
+namespace SpaInspectorReader
 {
     public class Spa
     {

@@ -1,34 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
-namespace SpaFileReader
+namespace SpaInspectorReader
 {
     public record Read : IDisposable
     {
         private static readonly DateTime SpaFileEpoch = new(1899, 12, 31, 0, 0, 0, DateTimeKind.Utc);
-        private BinaryReader _binaryReader;
-        private SpaBuilder _builder;
+        private readonly BinaryReader _binaryReader;
 
         public Read(Stream stream)
         {
             _binaryReader = new BinaryReader(stream);
-            _builder = new SpaBuilder();
         }
 
         public Spa ReadBinaryToSpa()
         {
+            var builder = new SpaBuilder();
             _binaryReader.Position(30);
             var specTitle = _binaryReader.ReadNullTerminatedString();
-            _builder.Title(specTitle);
+            builder.Title(specTitle);
             _binaryReader.Position(296);
 
             // days since 31/12/1899, 00:00
             var timestamp = _binaryReader.ReadUInt32();
             var dateTime = SpaFileEpoch.Add(TimeSpan.FromSeconds(timestamp));
-            _builder.DateTime(dateTime);
+            builder.DateTime(dateTime);
             /*
                 headers / metadata start from dec 304 and goes till dec 496
                     key 2 at hex 130, dec 304 = headers
@@ -63,31 +60,31 @@ namespace SpaFileReader
                 switch (key)
                 {
                     case 2:
-                        ReadHeaders(pos);
+                        ReadHeaders(builder, pos);
                         break;
                     case 3:
-                        _builder.UnitIntensities(ReadIntensities(pos));
+                        builder.UnitIntensities(ReadIntensities(pos));
                         break;
                     case 27:
                         _binaryReader.Position(pos + 2);
                         var historyPos = _binaryReader.ReadUInt32();
                         _binaryReader.Position(historyPos);
-                        _builder.History(_binaryReader.ReadNullTerminatedString());
+                        builder.History(_binaryReader.ReadNullTerminatedString());
                         break;
                     case 106:
                         _binaryReader.Position(pos + 2);
                         var settingsInfoPos = _binaryReader.ReadUInt32();
                         _binaryReader.Position(settingsInfoPos + 44);
-                        _builder.Gain(_binaryReader.ReadSingle())
+                        builder.Gain(_binaryReader.ReadSingle())
                             .OpticalVelocity(_binaryReader.ReadSingle());
                         break;
                     case 103:
                         // Background Interferogram
-                        _builder.BackgroundInterferogram(ReadIntensities(pos));
+                        builder.BackgroundInterferogram(ReadIntensities(pos));
                         break;
                     case 102:
                         // Unit Interferogram
-                        _builder.UnitInterferogram(ReadIntensities(pos));
+                        builder.UnitInterferogram(ReadIntensities(pos));
                         break;
                 }
 
@@ -96,27 +93,29 @@ namespace SpaFileReader
 
             _binaryReader.Close();
 
-            return _builder.Build();
+            return builder.Build();
         }
 
-        private float[] ReadIntensities(int pos)
+        private Span<float> ReadIntensities(int pos)
         {
             _binaryReader.Position(pos + 2);
             var intensityPos = _binaryReader.ReadInt32();
             _binaryReader.Position(pos + 6);
             var intensitySize = _binaryReader.ReadInt32();
-            return ReadFloats(intensityPos, intensitySize);
+            var spanFloats = ReadFloats(intensityPos, intensitySize);
+            spanFloats.Reverse();
+            return spanFloats;
         }
 
-        private float[] ReadFloats(int position, int size)
+        private Span<float> ReadFloats(int position, int size)
         {
             _binaryReader.Position(position);
             var asBytes = _binaryReader.ReadBytes(size).AsSpan();
             var asFloats = MemoryMarshal.Cast<byte, float>(asBytes);
-            return asFloats.ToArray();
+            return asFloats;
         }
 
-        private Headers ReadHeaders(int pos)
+        private Headers ReadHeaders(SpaBuilder builder, int pos)
         {
             _binaryReader.Position(pos + 2);
             var infoPos = _binaryReader.ReadUInt32();
@@ -135,77 +134,77 @@ namespace SpaFileReader
 
             _binaryReader.Position(infoPos + 8);
             var key = _binaryReader.ReadByte();
-            string xunits;
+            string xunit;
             string xtitle;
             switch (key)
             {
                 case 1:
-                    xunits = "cm ^ -1";
+                    xunit = "cm^-1";
                     xtitle = "Wave numbers";
                     break;
                 case 2:
-                    xunits = "";
+                    xunit = "";
                     xtitle = "Data points";
                     break;
                 case 3:
-                    xunits = "nm";
+                    xunit = "nm";
                     xtitle = "Wavelengths";
                     break;
                 case 4:
-                    xunits = "um";
+                    xunit = "um";
                     xtitle = "Wavelengths";
                     break;
                 case 32:
-                    xunits = "cm^-1";
+                    xunit = "cm^-1";
                     xtitle = "Raman Shift";
                     break;
                 default:
-                    xunits = "";
+                    xunit = "";
                     xtitle = "x axis";
                     break;
             }
 
             _binaryReader.Position(infoPos + 12);
             key = _binaryReader.ReadByte();
-            string units;
-            string title;
+            string yunit;
+            string ytitle;
             switch (key)
             {
                 case 17:
-                    units = "absorbance";
-                    title = "Absorbance";
+                    yunit = "absorbance";
+                    ytitle = "Absorbance";
                     break;
                 case 16:
-                    units = "percent";
-                    title = "Transmittance";
+                    yunit = "percent";
+                    ytitle = "Transmittance";
                     break;
                 case 11:
-                    units = "percent";
-                    title = "Reflectance";
+                    yunit = "percent";
+                    ytitle = "Reflectance";
                     break;
                 case 12:
-                    units = "";
-                    title = "Log(1/R)";
+                    yunit = "";
+                    ytitle = "Log(1/R)";
                     break;
                 case 20:
-                    units = "Kubelka_Munk";
-                    title = "Kubelka-Munk";
+                    yunit = "Kubelka_Munk";
+                    ytitle = "Kubelka-Munk";
                     break;
                 case 22:
-                    units = "V";
-                    title = "Volts";
+                    yunit = "V";
+                    ytitle = "Volts";
                     break;
                 case 26:
-                    units = "";
-                    title = "Photoacoustic";
+                    yunit = "";
+                    ytitle = "Photoacoustic";
                     break;
                 case 31:
-                    units = "";
-                    title = "Raman Intensity";
+                    yunit = "";
+                    ytitle = "Raman Intensity";
                     break;
                 default:
-                    units = "";
-                    title = "Intensity";
+                    yunit = "";
+                    ytitle = "Intensity";
                     break;
             }
 
@@ -220,19 +219,19 @@ namespace SpaFileReader
             _binaryReader.Position(infoPos + 72);
             var signalStrength = _binaryReader.ReadSingle();
 
-            _builder.UnitSize(unitSize)
-                .XUnits(xunits).XTitle(xtitle)
-                .Unit(units).UnitTitle(title)
+            builder.UnitSize(unitSize)
+                .XUnits(xunit).XTitle(xtitle)
+                .Unit(yunit).UnitTitle(ytitle)
                 .FirstX(firstx).LastX(lastx).SignalStrength(signalStrength)
                 .NumberOfScan(numberOfScan).NumberOfBackgroundScan(numberOfBackgroundScan);
 
             return new Headers
             {
                 UnitSize = unitSize,
-                XUnits = xunits,
+                XUnits = xunit,
                 XTitle = xtitle,
-                Unit = units,
-                UnitTitle = title,
+                YUnit = yunit,
+                YUnitTitle = ytitle,
                 FirstX = firstx,
                 LastX = lastx,
                 NumberOfScan = numberOfScan,
