@@ -18,7 +18,7 @@ namespace SpaFileReader.Benchmark
         }
 
         [Benchmark]
-        public Span<float> SpanReadFloat()
+        public Span<float> SpanReadFloats()
         {
             var absorbance = SpaFileReader.ReadXUnitAsFloats(_bytes);
             return absorbance;

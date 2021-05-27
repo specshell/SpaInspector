@@ -28,7 +28,7 @@ namespace SpaFileReader
         {
             var (start, length) = ReadSpecificFlagPositions(ref bytes, XUnitFlag);
             var xUnitAsBytes = bytes.Slice(start, length);
-            // the bytes in SPA file are stored from 4000 to 700 wave numbers
+            // The bytes in SPA file are stored from 4000 to 700 wave numbers
             // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
             xUnitAsBytes.Reverse();
             return xUnitAsBytes;
