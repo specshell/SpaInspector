@@ -51,7 +51,7 @@ jobs:
           dotnet test --configuration Release --no-build --no-restore
 
       - name: Push NuGet
-        run: dotnet nuget push **/*.nupkg --source $Env:SOURCE --api-key $Env:TOKEN --skip-duplicate
+        run: dotnet nuget push **/*.nupkg --source $SOURCE --api-key $TOKEN --skip-duplicate
         env:
           SOURCE: 'https://api.nuget.org/v3/index.json'
           TOKEN: ${{ secrets.NUGET_API_KEY }}
