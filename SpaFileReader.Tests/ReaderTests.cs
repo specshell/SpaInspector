@@ -10,7 +10,7 @@ namespace SpaFileReader.Tests
         public void SpanReaderReadAsFloatsTest()
         {
             var bytes = File.ReadAllBytes(TestFile("test1.spa"));
-            var readAbsorbanceStartPosition = SpaFileReader.ReadXUnitAsFloats(bytes);
+            var readAbsorbanceStartPosition = SpaFile.ReadYUnitAsFloats(bytes);
             Assert.Equal(6846, readAbsorbanceStartPosition.Length);
         }
 
@@ -18,7 +18,7 @@ namespace SpaFileReader.Tests
         public void SpanReaderReadAsBytesTest()
         {
             var bytes = File.ReadAllBytes(TestFile("test1.spa"));
-            var readAbsorbanceStartPosition = SpaFileReader.ReadXUnitAsBytes(bytes);
+            var readAbsorbanceStartPosition = SpaFile.ReadYUnitAsBytes(bytes);
             Assert.Equal(27384, readAbsorbanceStartPosition.Length);
         }
     }
