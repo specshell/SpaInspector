@@ -6,24 +6,39 @@ namespace SpaFileReader
 {
     public static class SpaFileReader
     {
-        private const short UnitIntensityFlag = 3;
+        private const short XUnitFlag = 3;
         private const int PositionsAddress = 0x000120;
 
-        public static Span<float> ReadXUnit(byte[] bytes)
+        public static Span<byte> ReadXUnitAsBytes(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var absorbance = ReadXUnit(ref span);
-            return absorbance;
+            var xUnitAsBytes = ReadXUnitAsBytes(ref span);
+            return xUnitAsBytes;
         }
 
-        public static Span<float> ReadXUnit(ref Span<byte> bytes)
+        public static Span<float> ReadXUnitAsFloats(byte[] bytes)
         {
-            var (start, length) = ReadSpecificFlagPositions(ref bytes, UnitIntensityFlag);
-            var spanFloats = ReadFloats(ref bytes, start, length);
-            // Floats in SPA file are stored from 4000 to 700 wave numbers
+            var span = bytes.AsSpan();
+            var xUnitAsFloats = ReadXUnitAsFloats(ref span);
+            return xUnitAsFloats;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<byte> ReadXUnitAsBytes(ref Span<byte> bytes)
+        {
+            var (start, length) = ReadSpecificFlagPositions(ref bytes, XUnitFlag);
+            var xUnitAsBytes = bytes.Slice(start, length);
+            // the bytes in SPA file are stored from 4000 to 700 wave numbers
             // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
-            spanFloats.Reverse();
-            return spanFloats;
+            xUnitAsBytes.Reverse();
+            return xUnitAsBytes;
+        }
+
+        public static Span<float> ReadXUnitAsFloats(ref Span<byte> bytes)
+        {
+            var xUnitAsBytes = ReadXUnitAsBytes(ref bytes);
+            var xUnitAsFloats = MemoryMarshal.Cast<byte, float>(xUnitAsBytes);
+            return xUnitAsFloats;
         }
 
         private static (int start, int length) ReadSpecificFlagPositions(ref Span<byte> bytes, short expectedFlag)
@@ -45,13 +60,6 @@ namespace SpaFileReader
             }
 
             return (0, 0);
-        }
-
-        public static Span<float> ReadFloats(ref Span<byte> bytes, int start, int length)
-        {
-            var asBytes = bytes.Slice(start, length);
-            var asFloats = MemoryMarshal.Cast<byte, float>(asBytes);
-            return asFloats;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
