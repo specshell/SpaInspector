@@ -1,0 +1,57 @@
+﻿name: .NET Release
+
+on:
+  release:
+    types: [published]
+
+env:
+  RELEASE: "true"
+
+jobs:
+  release:
+    runs-on: ubuntu-20.04
+    name: Release
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - uses: actions/cache@v2
+        with:
+          path: |
+            ~/.nuget/packages
+            .dotnet/tools
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/packages.lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-nuget-
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v0.9.7
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version
+        uses: gittools/actions/gitversion/execute@v0.9.7
+        with:
+          useConfigFile: true
+
+      - name: Restore dependencies
+        run: |
+          dotnet restore
+
+      - name: DotNet Build
+        run: |
+          dotnet build --no-restore
+          dotnet build --configuration Release --no-restore
+          dotnet pack --configuration Release --no-restore --no-build
+
+      - name: DotNet Test
+        run: |
+          dotnet test --configuration Release --no-build --no-restore
+
+      - name: Push NuGet
+        run: dotnet nuget push **/*.nupkg --source $Env:SOURCE --api-key $Env:TOKEN --skip-duplicate
+        env:
+          SOURCE: 'https://api.nuget.org/v3/index.json'
+          TOKEN: ${{ secrets.NUGET_API_KEY }}

@@ -1,4 +1,4 @@
-﻿name: DotNet
+﻿name: .NET Build
 
 on:
   pull_request:
@@ -7,13 +7,11 @@ on:
   push:
     branches:
       - main
-  release:
-    types: [published]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-20.04
-    name: Test
+    name: Build
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -27,33 +25,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nuget-
 
-      - name: Install GitVersion
-        uses: gittools/actions/gitversion/setup@v0.9.7
-        with:
-          versionSpec: '5.x'
-
-      - name: Determine Version
-        uses: gittools/actions/gitversion/execute@v0.9.7
-        with:
-          useConfigFile: true
-
-      - name: DotNet Build
-        shell: pwsh
+      - name: Restore dependencies
         run: |
           dotnet restore
+
+      - name: DotNet Build
+        run: |
           dotnet build --no-restore
           dotnet build --configuration Release --no-restore
           dotnet pack --configuration Release --no-restore --no-build
 
       - name: DotNet Test
-        shell: pwsh
         run: |
           dotnet test --no-build --no-restore
 
-      - name: Push NuGet
-        if: github.event.action == 'published'
-        shell: pwsh
-        run: dotnet nuget push **/*.nupkg --source $Env:SOURCE --api-key $Env:TOKEN --skip-duplicate
-        env:
-          SOURCE: 'https://api.nuget.org/v3/index.json'
-          TOKEN: ${{ secrets.NUGET_API_KEY }}
+      - name: Test
+        run: dotnet test -c Release --collect:"XPLat Code Coverage" --settings coverlet.runsettings --results-directory "coverage" --verbosity normal --no-build --no-restore
+
+      - name: Upload coverage reports
+        if: ${{ always() }}
+        uses: codecov/codecov-action@v1
+        with:
+          directory: ./coverage
+          name: codecov-specshell
+          fail_ci_if_error: true
+          verbose: false
