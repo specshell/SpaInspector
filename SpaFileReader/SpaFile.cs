@@ -4,41 +4,41 @@ using System.Runtime.InteropServices;
 
 namespace SpaFileReader
 {
-    public static class SpaFileReader
+    public static class SpaFile
     {
-        private const short XUnitFlag = 3;
+        private const short YUnitFlag = 3;
         private const int PositionsAddress = 0x000120;
 
-        public static Span<byte> ReadXUnitAsBytes(byte[] bytes)
+        public static Span<byte> ReadYUnitAsBytes(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var xUnitAsBytes = ReadXUnitAsBytes(ref span);
-            return xUnitAsBytes;
+            var yUnitAsBytes = ReadYUnitAsBytes(ref span);
+            return yUnitAsBytes;
         }
 
-        public static Span<float> ReadXUnitAsFloats(byte[] bytes)
+        public static Span<float> ReadYUnitAsFloats(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var xUnitAsFloats = ReadXUnitAsFloats(ref span);
-            return xUnitAsFloats;
+            var yUnitAsFloats = ReadYUnitAsFloats(ref span);
+            return yUnitAsFloats;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Span<byte> ReadXUnitAsBytes(ref Span<byte> bytes)
+        public static Span<byte> ReadYUnitAsBytes(ref Span<byte> bytes)
         {
-            var (start, length) = ReadSpecificFlagPositions(ref bytes, XUnitFlag);
-            var xUnitAsBytes = bytes.Slice(start, length);
-            // The bytes in SPA file are stored from 4000 to 700 wave numbers
-            // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
-            xUnitAsBytes.Reverse();
-            return xUnitAsBytes;
+            var (start, length) = ReadSpecificFlagPositions(ref bytes, YUnitFlag);
+            var yUnitAsBytes = bytes.Slice(start, length);
+            return yUnitAsBytes;
         }
 
-        public static Span<float> ReadXUnitAsFloats(ref Span<byte> bytes)
+        public static Span<float> ReadYUnitAsFloats(ref Span<byte> bytes)
         {
-            var xUnitAsBytes = ReadXUnitAsBytes(ref bytes);
-            var xUnitAsFloats = MemoryMarshal.Cast<byte, float>(xUnitAsBytes);
-            return xUnitAsFloats;
+            var yUnitAsBytes = ReadYUnitAsBytes(ref bytes);
+            var yUnitAsFloats = MemoryMarshal.Cast<byte, float>(yUnitAsBytes);
+            // The floats in SPA file are stored from 4000 to 700 wave numbers
+            // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
+            yUnitAsFloats.Reverse();
+            return yUnitAsFloats;
         }
 
         private static (int start, int length) ReadSpecificFlagPositions(ref Span<byte> bytes, short expectedFlag)
