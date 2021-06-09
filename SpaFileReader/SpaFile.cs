@@ -23,6 +23,27 @@ namespace SpaFileReader
             return yUnitAsFloats;
         }
 
+        public static float[] ReadYUnitAsFloatArray(byte[] bytes)
+        {
+            var span = bytes.AsSpan();
+            var yUnitAsFloats = ReadYUnitAsFloats(ref span);
+            return yUnitAsFloats.ToArray();
+        }
+
+        public static Span<double> ReadYUnitAsDoubles(byte[] bytes)
+        {
+            var span = bytes.AsSpan();
+            var yUnitAsDoubles = ReadYUnitAsDoubleArray(ref span);
+            return yUnitAsDoubles;
+        }
+
+        public static double[] ReadYUnitAsDoubleArray(byte[] bytes)
+        {
+            var span = bytes.AsSpan();
+            var yUnitAsDoubles = ReadYUnitAsDoubleArray(ref span);
+            return yUnitAsDoubles;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> ReadYUnitAsBytes(ref Span<byte> bytes)
         {
@@ -39,6 +60,18 @@ namespace SpaFileReader
             // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
             yUnitAsFloats.Reverse();
             return yUnitAsFloats;
+        }
+
+        public static double[] ReadYUnitAsDoubleArray(ref Span<byte> bytes)
+        {
+            var yUnitAsFloats = ReadYUnitAsFloats(ref bytes);
+            var yUnitAsDoubles = new double[yUnitAsFloats.Length];
+            for (var i = 0; i < yUnitAsDoubles.Length; i++)
+            {
+                yUnitAsDoubles[i] = yUnitAsFloats[i];
+            }
+
+            return yUnitAsDoubles;
         }
 
         private static (int start, int length) ReadSpecificFlagPositions(ref Span<byte> bytes, short expectedFlag)
