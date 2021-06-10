@@ -25,9 +25,30 @@ namespace SpaFileReader.Benchmark
         }
 
         [Benchmark]
+        public float[] SpanReadFloatArray()
+        {
+            var absorbance = SpaFile.ReadYUnitAsFloatArray(_bytes);
+            return absorbance;
+        }
+
+        [Benchmark]
         public Span<byte> SpanReadBytes()
         {
             var absorbance = SpaFile.ReadYUnitAsBytes(_bytes);
+            return absorbance;
+        }
+
+        [Benchmark]
+        public Span<double> SpanReadDouble()
+        {
+            var absorbance = SpaFile.ReadYUnitAsDoubles(_bytes);
+            return absorbance;
+        }
+
+        [Benchmark]
+        public double[] SpanReadDoubleArray()
+        {
+            var absorbance = SpaFile.ReadYUnitAsDoubleArray(_bytes);
             return absorbance;
         }
 
