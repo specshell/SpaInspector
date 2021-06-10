@@ -177,11 +177,11 @@
       "url": "_framework\/System.IO.Pipelines.dll"
     },
     {
-      "hash": "sha256-0EKGly+u97mmRx5NBjtAKeUDjl05F+JTMoC6UVW5gro=",
+      "hash": "sha256-sRX22D6NPFrhfwL\/ou6ivsbnxOHNZCfUPcPiPJVqcHk=",
       "url": "_framework\/SpaInspectorReader.dll"
     },
     {
-      "hash": "sha256-fJimmDfnnU\/U0yv3n4IF1QB7pbEwn3iyJ04o6E8GKCM=",
+      "hash": "sha256-sTD6qKH2OBpa\/P7K+QWZZpGRMUlyIxQZj+B+31XiL78=",
       "url": "_framework\/SpaInspector.dll"
     },
     {
@@ -269,7 +269,7 @@
       "url": "_framework\/System.Private.CoreLib.dll"
     },
     {
-      "hash": "sha256-CfgQZaKKayPYkLsl9YWCncMQwkdXtHZQ0xL408ZSlf8=",
+      "hash": "sha256-OZlPh5gsrIrckIPDzAEjy\/24NdCs\/LubuWQwclLPHno=",
       "url": "_framework\/blazor.boot.json"
     },
     {
@@ -277,5 +277,5 @@
       "url": "_framework\/blazor.webassembly.js"
     }
   ],
-  "version": "16El7Deo"
+  "version": "yUxZu3rX"
 };
