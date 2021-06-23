@@ -13,7 +13,7 @@ namespace SpaInspectorReader
         public float LastX { get; init; }
         public uint NumberOfScan { get; init; }
         public uint NumberOfBackgroundScan { get; init; }
-        public float Resolution => MathF.Abs((LastX - FirstX) / UnitSize);
+        public float Resolution => Math.Abs((LastX - FirstX) / (UnitSize - 1));
         public float SignalStrength { get; set; }
         public float Gain { get; set; }
         public float OpticalVelocity { get; set; }
