@@ -16,7 +16,7 @@ namespace SpaFileReader.Tests
         [Fact]
         public void SpanReaderReadAsFloatsTest()
         {
-            var yUnits = SpaFile.ReadYUnitAsFloats(_bytes);
+            var yUnits = SpaFile.ReadYUnitAsSpanFloat(_bytes);
             Assert.Equal(6846, yUnits.Length);
             Assert.Equal(0.03549831f, yUnits[0]);
             Assert.Equal(0.009505022f, yUnits[^1]);
@@ -34,7 +34,7 @@ namespace SpaFileReader.Tests
         [Fact]
         public void SpanReaderReadAsDoublesTest()
         {
-            var yUnits = SpaFile.ReadYUnitAsDoubles(_bytes);
+            var yUnits = SpaFile.ReadYUnitAsSpanDouble(_bytes);
             Assert.Equal(6846, yUnits.Length);
             Assert.Equal(0.03549830988049507, yUnits[0]);
             Assert.Equal(0.009505022317171097, yUnits[^1]);
@@ -52,7 +52,7 @@ namespace SpaFileReader.Tests
         [Fact]
         public void SpanReaderReadAsBytesTest()
         {
-            var yUnits = SpaFile.ReadYUnitAsBytes(_bytes);
+            var yUnits = SpaFile.ReadYUnitAsSpanByte(_bytes);
             Assert.Equal(27384, yUnits.Length);
         }
     }
