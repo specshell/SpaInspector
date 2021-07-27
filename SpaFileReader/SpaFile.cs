@@ -141,7 +141,7 @@ namespace SpaFileReader
         {
             var position = PositionsAddress;
 
-            byte flag = 1;
+            short flag = 1;
             while (flag != expectedFlag)
             {
                 flag = bytes.ReadByteAt(position);
