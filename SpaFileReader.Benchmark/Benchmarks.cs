@@ -1,12 +1,14 @@
 ﻿using System;
 using System.IO;
 using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Order;
 using SpaInspectorReader;
 using static SpaTestUtils.TestFixture;
 
 namespace SpaFileReader.Benchmark
 {
     [MemoryDiagnoser]
+    [Orderer(SummaryOrderPolicy.FastestToSlowest)]
     public class Benchmarks
     {
         private static readonly string TestFile = BenchmarkTestFile("test1.spa");
@@ -20,7 +22,7 @@ namespace SpaFileReader.Benchmark
         [Benchmark]
         public Span<float> SpanReadFloats()
         {
-            var absorbance = SpaFile.ReadYUnitAsFloats(_bytes);
+            var absorbance = SpaFile.ReadYUnitAsSpanFloat(_bytes);
             return absorbance;
         }
 
@@ -34,14 +36,14 @@ namespace SpaFileReader.Benchmark
         [Benchmark]
         public Span<byte> SpanReadBytes()
         {
-            var absorbance = SpaFile.ReadYUnitAsBytes(_bytes);
+            var absorbance = SpaFile.ReadYUnitAsSpanByte(_bytes);
             return absorbance;
         }
 
         [Benchmark]
         public Span<double> SpanReadDouble()
         {
-            var absorbance = SpaFile.ReadYUnitAsDoubles(_bytes);
+            var absorbance = SpaFile.ReadYUnitAsSpanDouble(_bytes);
             return absorbance;
         }
 

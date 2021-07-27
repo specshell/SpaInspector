@@ -33,22 +33,22 @@ namespace SpaInspector.Components
 
             for (var i = unitIntensities.Length - 1; i >= 0; i--)
             {
-                waves.Add(i * Spa.Headers.Resolution + Spa.Headers.LastX);
+                waves.Add(i * Spa.Headers.DataSpacing + Spa.Headers.LastX);
             }
 
             Data = new List<ITrace>
             {
-                new ScatterGl()
+                new ScatterGl
                 {
                     Name = "ScatterTrace",
                     Mode = ModeFlag.Lines,
-                    Y = unitIntensities.Cast<object>().ToArray(),
+                    Y = unitIntensities.Reverse().Cast<object>().ToArray(),
                     X = waves,
                     Line = new Line
                     {
-                        Width = 1.5m
-                    }
-                }
+                        Width = 1.5m,
+                    },
+                },
             };
 
             Layout = new Layout()
@@ -59,7 +59,8 @@ namespace SpaInspector.Components
                     {
                         AutoRange = AutoRangeEnum.False,
                         Range = new List<object> {Spa.Headers.FirstX, Spa.Headers.LastX},
-                    }
+                        ShowGrid = false,
+                    },
                 },
                 YAxis = new List<YAxis>
                 {
@@ -69,7 +70,9 @@ namespace SpaInspector.Components
                         Ticks = TicksEnum.Empty,
                         Tick0 = 0,
                         DTick = unitIntensities.Max() < 1.0f ? 0.1 : 1,
-                    }
+                        ZeroLine = false,
+                        ShowGrid = false,
+                    },
                 },
                 AutoSize = false,
                 Height = 750,
