@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 namespace SpaFileReader
 {
@@ -21,23 +23,63 @@ namespace SpaFileReader
         public static Span<float> ReadYUnitAsSpanFloat(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var yUnitAsFloats = ReadYUnitAsSpanFloat(ref span);
-            return yUnitAsFloats;
+            var yUnitAsSpanFloat = ReadYUnitAsSpanFloat(ref span);
+            return yUnitAsSpanFloat;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float[] ReadYUnitAsFloatArray(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var yUnitAsFloats = ReadYUnitAsSpanFloat(ref span);
-            return yUnitAsFloats.ToArray();
+            var yUnitAsFloatArray = ReadYUnitAsSpanFloat(ref span);
+            return yUnitAsFloatArray.ToArray();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<float> ReadYUnitAsSpanFloat(string file)
+        {
+            var bytes = File.ReadAllBytes(file);
+            var yUnitAsSpanFloat = ReadYUnitAsSpanFloat(bytes);
+            return yUnitAsSpanFloat;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static float[] ReadYUnitAsFloatArray(string file)
+        {
+            var bytes = File.ReadAllBytes(file);
+            var yUnitAsFloatArray = ReadYUnitAsFloatArray(bytes);
+            return yUnitAsFloatArray;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<float[]> ReadYUnitAsFloatArrayAsync(string file)
+        {
+            var bytes = await File.ReadAllBytesAsync(file);
+            var yUnitAsFloatArray = ReadYUnitAsFloatArray(bytes);
+            return yUnitAsFloatArray;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<double[]> ReadYUnitAsDoubleArray(string file)
+        {
+            var bytes = await File.ReadAllBytesAsync(file);
+            var yUnitAsDoubleArray = ReadYUnitAsDoubleArray(bytes);
+            return yUnitAsDoubleArray;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<double> ReadYUnitAsSpanDouble(string file)
+        {
+            var bytes = File.ReadAllBytes(file);
+            var yUnitAsSpanFloat = ReadYUnitAsDoubleArray(bytes);
+            return yUnitAsSpanFloat;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<double> ReadYUnitAsSpanDouble(byte[] bytes)
         {
             var span = bytes.AsSpan();
-            var yUnitAsDoubles = ReadYUnitAsDoubleArray(ref span);
+            var yUnitAsDoubles = ReadYUnitAsSpanDouble(ref span);
             return yUnitAsDoubles;
         }
 
@@ -70,6 +112,19 @@ namespace SpaFileReader
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double[] ReadYUnitAsDoubleArray(ref Span<byte> bytes)
+        {
+            var yUnitAsFloats = ReadYUnitAsSpanFloat(ref bytes);
+            var yUnitAsDoubles = new double[yUnitAsFloats.Length];
+            for (var i = 0; i < yUnitAsDoubles.Length; i++)
+            {
+                yUnitAsDoubles[i] = yUnitAsFloats[i];
+            }
+
+            return yUnitAsDoubles;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<double> ReadYUnitAsSpanDouble(ref Span<byte> bytes)
         {
             var yUnitAsFloats = ReadYUnitAsSpanFloat(ref bytes);
             var yUnitAsDoubles = new double[yUnitAsFloats.Length];
