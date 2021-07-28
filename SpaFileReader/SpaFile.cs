@@ -52,6 +52,14 @@ namespace SpaFileReader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static double[] ReadYUnitAsDoubleArray(string file)
+        {
+            var bytes = File.ReadAllBytes(file);
+            var yUnitAsDoubleArray = ReadYUnitAsDoubleArray(bytes);
+            return yUnitAsDoubleArray;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<float[]> ReadYUnitAsFloatArrayAsync(string file)
         {
             var bytes = await File.ReadAllBytesAsync(file);
@@ -60,7 +68,7 @@ namespace SpaFileReader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<double[]> ReadYUnitAsDoubleArray(string file)
+        public static async Task<double[]> ReadYUnitAsDoubleArrayAsync(string file)
         {
             var bytes = await File.ReadAllBytesAsync(file);
             var yUnitAsDoubleArray = ReadYUnitAsDoubleArray(bytes);
