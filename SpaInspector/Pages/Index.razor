@@ -2,63 +2,68 @@
 @using System.IO
 @using System.Globalization
 @using SpaInspectorReader
-
-<h1>SpaInspector</h1>
-
-<p>
-  <InputFile OnChange="@OnInputFileChange" multiple/>
-</p>
-
-@if (spaList.Count > 0)
-{
-  <h4>Spectras</h4>
-
-  @foreach (var spa in spaList)
-  {
-    <SpectraView Spa="@spa"/>  }
-}
-else if (loading)
-{
-  <p>Loading SPA files...</p>
-}
-else
-{
-  <p>Please select one or more SPA files</p>
-}
-
-@code {
-
-  private readonly IList<Spa> spaList = new List<Spa>();
-  private bool loading;
-
-  async IAsyncEnumerable<Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
-  {
-    var spaFiles = list.Where(f => f.Name.EndsWith(".spa", true, CultureInfo.InvariantCulture)).ToList();
-    if (!spaFiles.Any()) yield break;
-    foreach (var spaFile in spaFiles)
-    {
-      var memoryStream = new MemoryStream();
-      await using (var stream = spaFile.OpenReadStream())
+<MudGrid>
+  <MudItem xs="12">
+    <MudPaper Class="d-flex align-center justify-center mud-width-full py-8">
+      <h1>SpaInspector</h1>
+      <p>
+        <InputFile OnChange="@OnInputFileChange" multiple />
+      </p>
+    </MudPaper>
+  </MudItem>
+  <MudItem xs="6">
+    <MudItem Class="d-flex align-center justify-center mud-width-full py-8">
+      @if (spaList.Count > 0)
       {
-        await stream.CopyToAsync(memoryStream);
-      }
-      memoryStream.Position = 0;
-      var spa = memoryStream.ReadSpa();
-      yield return spa;
-    }
-  }
+    <h4>Spectras</h4>
 
-  private async Task OnInputFileChange(InputFileChangeEventArgs e)
+                  @foreach (var spa in spaList)
+                  {
+
+    <SpectraView Spa="@spa" />} }
+                else if (loading)
+                {
+    <p>Loading SPA files...</p> }
+  else
   {
-    const int maxAllowedFiles = 300;
-    spaList.Clear();
-    loading = true;
+    <p>Please select one or more SPA files</p>}
+      
+    </MudItem>
+  </MudItem>
+  <MudItem xs="6">
+        <MudItem Class="d-flex align-center justify-center mud-width-full py-8"></MudItem>
+      </MudItem>
+</MudGrid>
 
-    await foreach (var spa in GetSpectraFromFiles(e.GetMultipleFiles(maxAllowedFiles)))
+  @code { private readonly IList<Spa> spaList = new List<Spa>();
+    private bool loading;
+
+    async IAsyncEnumerable<Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
     {
-      spaList.Add(spa);
+      var spaFiles = list.Where(f => f.Name.EndsWith(".spa", true, CultureInfo.InvariantCulture)).ToList();
+      if (!spaFiles.Any()) yield break;
+      foreach (var spaFile in spaFiles)
+      {
+        var memoryStream = new MemoryStream();
+        await using (var stream = spaFile.OpenReadStream())
+        {
+          await stream.CopyToAsync(memoryStream);
+        }
+        memoryStream.Position = 0;
+        var spa = memoryStream.ReadSpa();
+        yield return spa;
+      }
     }
-    loading = false;
-  }
 
-}
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+      const int maxAllowedFiles = 300;
+      spaList.Clear();
+      loading = true;
+
+      await foreach (var spa in GetSpectraFromFiles(e.GetMultipleFiles(maxAllowedFiles)))
+      {
+        spaList.Add(spa);
+      }
+      loading = false;
+    } }
