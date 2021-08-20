@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -8,6 +9,7 @@ namespace SpaFileReader
 {
     public static class SpaFile
     {
+        private static readonly ArrayPool<byte> Pool = ArrayPool<byte>.Shared;
         private const short YUnitFlag = 3;
         private const int PositionsAddress = 0x000130;
 
@@ -38,24 +40,94 @@ namespace SpaFileReader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<float> ReadYUnitAsSpanFloat(string file)
         {
-            var bytes = File.ReadAllBytes(file);
-            var yUnitAsSpanFloat = ReadYUnitAsSpanFloat(bytes);
-            return yUnitAsSpanFloat;
+            Span<byte> flagSpan = stackalloc byte[16];
+
+            var fileStream = File.OpenRead(file);
+            fileStream.Seek(304, SeekOrigin.Begin);
+            byte flag;
+            do
+            {
+                fileStream.Read(flagSpan);
+                flag = flagSpan.ReadByteAt(0);
+            } while (flag != 3);
+
+            var startPosition = flagSpan.ReadInt32At(2);
+            var size = flagSpan.ReadInt32At(6);
+            var bytes = new byte[size];
+            var bytesSpan = bytes.AsSpan(0, size);
+
+            fileStream.Seek(startPosition - fileStream.Position, SeekOrigin.Current);
+            fileStream.Read(bytesSpan);
+            fileStream.Dispose();
+
+            var yUnitAsFloatSpan = MemoryMarshal.Cast<byte, float>(bytesSpan);
+            yUnitAsFloatSpan.Reverse();
+            return yUnitAsFloatSpan;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static float[] ReadYUnitAsFloatArray(string file)
         {
-            var bytes = File.ReadAllBytes(file);
-            var yUnitAsFloatArray = ReadYUnitAsFloatArray(bytes);
+            Span<byte> flagSpan = stackalloc byte[16];
+
+            var fileStream = File.OpenRead(file);
+            fileStream.Seek(304, SeekOrigin.Begin);
+            byte flag;
+            do
+            {
+                fileStream.Read(flagSpan);
+                flag = flagSpan.ReadByteAt(0);
+            } while (flag != 3);
+
+            var startPosition = flagSpan.ReadInt32At(2);
+            var size = flagSpan.ReadInt32At(6);
+            var bytes = Pool.Rent(size);
+            var bytesSpan = bytes.AsSpan(0, size);
+
+            fileStream.Seek(startPosition - fileStream.Position, SeekOrigin.Current);
+            fileStream.Read(bytesSpan);
+            fileStream.Dispose();
+
+            var yUnitAsFloatSpan = MemoryMarshal.Cast<byte, float>(bytesSpan);
+            yUnitAsFloatSpan.Reverse();
+            var yUnitAsFloatArray = yUnitAsFloatSpan.ToArray();
+            Pool.Return(bytes);
             return yUnitAsFloatArray;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double[] ReadYUnitAsDoubleArray(string file)
         {
-            var bytes = File.ReadAllBytes(file);
-            var yUnitAsDoubleArray = ReadYUnitAsDoubleArray(bytes);
+            Span<byte> flagSpan = stackalloc byte[16];
+
+            var fileStream = File.OpenRead(file);
+            fileStream.Seek(304, SeekOrigin.Begin);
+            byte flag;
+            do
+            {
+                fileStream.Read(flagSpan);
+                flag = flagSpan.ReadByteAt(0);
+            } while (flag != 3);
+
+            var startPosition = flagSpan.ReadInt32At(2);
+            var size = flagSpan.ReadInt32At(6);
+            var bytes = Pool.Rent(size);
+            var bytesSpan = bytes.AsSpan(0, size);
+
+            fileStream.Seek(startPosition - fileStream.Position, SeekOrigin.Current);
+            fileStream.Read(bytesSpan);
+            fileStream.Dispose();
+
+            var yUnitAsFloatSpan = MemoryMarshal.Cast<byte, float>(bytesSpan);
+            yUnitAsFloatSpan.Reverse();
+            var length = yUnitAsFloatSpan.Length;
+            var yUnitAsDoubleArray = new double[length];
+            for (var i = 0; i < length; i++)
+            {
+                yUnitAsDoubleArray[i] = yUnitAsFloatSpan[i];
+            }
+
+            Pool.Return(bytes);
             return yUnitAsDoubleArray;
         }
 
@@ -78,9 +150,8 @@ namespace SpaFileReader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<double> ReadYUnitAsSpanDouble(string file)
         {
-            var bytes = File.ReadAllBytes(file);
-            var yUnitAsSpanFloat = ReadYUnitAsDoubleArray(bytes);
-            return yUnitAsSpanFloat;
+            var readYUnitAsDoubleSpan = ReadYUnitAsDoubleArray(file).AsSpan();
+            return readYUnitAsDoubleSpan;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -184,6 +255,30 @@ namespace SpaFileReader
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int ReadInt32At(this ref Span<byte> data, int offset)
+        {
+            return offset + 4 > data.Length
+                ? 0
+                : MemoryMarshal.Read<int>(data.Slice(offset, 4));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static byte ReadByteAt(this ref ReadOnlySpan<byte> data, int offset)
+        {
+            return offset + 1 > data.Length
+                ? (byte)0
+                : MemoryMarshal.Read<byte>(data.Slice(offset, 1));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static short ReadInt16At(this ref ReadOnlySpan<byte> data, int offset)
+        {
+            return offset + 2 > data.Length
+                ? (short)0
+                : MemoryMarshal.Read<short>(data.Slice(offset, 2));
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int ReadInt32At(this ref ReadOnlySpan<byte> data, int offset)
         {
             return offset + 4 > data.Length
                 ? 0
