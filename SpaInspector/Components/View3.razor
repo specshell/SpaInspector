@@ -1,0 +1,10 @@
+@using Plotly.Blazor
+
+@if (Data != null)
+{
+<div>
+  <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart" />
+</div>
+        <div class="text-left">
+          <button type="button" class="btn btn-primary" @onclick="() => Chart.Clear()">Clear</button>
+        </div>}

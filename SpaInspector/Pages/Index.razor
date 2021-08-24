@@ -2,30 +2,90 @@
 @using System.IO
 @using System.Globalization
 @using SpaInspectorReader
+
 <h1>SpaInspector</h1>
 
 <p>
-  <InputFile OnChange="@OnInputFileChange" multiple />
+  <label for="fileinput" class="label-wrapper">
+    <span class="oi oi-paperclip">
+      <InputFile OnChange="@OnInputFileChange" multiple />
+    </span>
+  </label>
 </p>
+<div>
+  <EditForm Model="view">
+    <InputRadioGroup @bind-Value="view.Name">
+      @foreach (var option in rdOptions)
+{
+<InputRadio Value="option" /> @option <br />}
+    </InputRadioGroup>
+  </EditForm>
+</div>
 
+
+@switch (view.Name)
+{
+  case "View1":
 @if (spaList.Count > 0)
 {
 <h4>Spectras</h4>
-
-        @foreach (var spa in spaList)
-        {
-<SpectraView Spa="@spa" />
-}}
-      else if (loading)
-      {
-<p>Loading SPA files...</p>}
+            <div class="row">
+              @foreach (var spa in spaList)
+              {
+  <div class="col-6"> <SpectraView Spa="@spa" /> </div>}
+            </div> }
+          else if (loading)
+          {
+<p>Loading SPA files...</p> }
 else
 {
-<p>Please select one or more SPA files</p>}
+<p>Please select one or more SPA files</p>} break;
+
+case "View2":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+            <div class="row">
+              <div class="col-6"><View2 SpaList="@spaList" /></div>
+            </div> }
+          else if (loading)
+          {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>} break;
+case "View3":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+            <div class="row">
+              <div class="col-6"><View3 SpaList="@spaList" /></div>
+            </div> }
+          else if (loading)
+          {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>}break;
+
+}
+
 
 
 @code { private readonly IList<Spa> spaList = new List<Spa>();
+
+  View view = new View()
+  {
+    Name = "View1" // default value
+  };
+  List<string> rdOptions = new List<string> { "View1", "View2", "View3" };
+
   private bool loading;
+
+  public class View
+  {
+    public string Name { get; set; }
+  }
 
   async IAsyncEnumerable<Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
   {
