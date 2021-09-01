@@ -65,6 +65,7 @@ namespace SpaInspector.Components
 
             foreach (var spa in SpaList)
             {
+
                 var unitIntensities = spa.UnitIntensities;
                 if (unitIntensities.Length == 0) return;
 

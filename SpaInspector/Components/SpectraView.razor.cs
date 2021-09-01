@@ -21,6 +21,8 @@ namespace SpaInspector.Components
 
         public Layout Layout;
 
+      
+
         // ReSharper disable once NotAccessedField.Local
         public IList<ITrace> Data;
 
@@ -78,6 +80,7 @@ namespace SpaInspector.Components
                 Height = 750,
                 Width = 1500,
             };
+            
         }
     }
 }

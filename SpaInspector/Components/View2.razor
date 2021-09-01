@@ -5,6 +5,8 @@
 <div>
   <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart" />
 </div>
-        <div class="text-left">
-          <button type="button" class="btn btn-primary" @onclick="() => Chart.Clear()">Clear</button>
-        </div>}
+<div class="text-left">
+  <button type="button" class="btn btn-primary" @onclick="() => Chart.Clear()">Clear</button>
+  <button type="button" class="btn btn-primary" @onclick="() => Restyle()">Rename First</button>
+  <button type="button" class="btn btn-primary" @onclick="() => DeleteScatter()">Pop</button>
+</div>}
