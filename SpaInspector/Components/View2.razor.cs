@@ -23,6 +23,20 @@ namespace SpaInspector.Components
 
         public Layout Layout;
 
+        //Rename the first chart
+        private async Task Restyle()
+        {
+            var updateScatterChart = new Scatter
+            {
+                Name = "First chart"
+            };
+            await Chart.Restyle(updateScatterChart,0);
+        }
+        //Delete the first chart
+        private async Task DeleteScatter()
+        {
+            await Chart.DeleteTrace(0);
+        }
         // ReSharper disable once NotAccessedField.Local
         public IList<ITrace> Data;
 
@@ -45,7 +59,7 @@ namespace SpaInspector.Components
                 Data.Add(new ScatterGl
                 {
 
-                    Name = spa.Title, // Figure it out title
+                    Name = "Spa file", // Figure it out title
                     Mode = ModeFlag.Lines,
                     Y = unitIntensities.Reverse().Cast<object>().ToArray(),
                     X = waves,
@@ -61,6 +75,7 @@ namespace SpaInspector.Components
 
                 Layout = new Layout()
                 {
+              
                     XAxis = new List<XAxis>
                     {
                         new XAxis()
