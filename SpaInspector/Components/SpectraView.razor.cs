@@ -59,7 +59,8 @@ namespace SpaInspector.Components
                     {
                         AutoRange = AutoRangeEnum.False,
                         Range = new List<object> {Spa.Headers.FirstX, Spa.Headers.LastX},
-                        ShowGrid = false,
+                        ShowGrid = true,
+                        ZeroLine = true,
                     },
                 },
                 YAxis = new List<YAxis>
@@ -67,16 +68,18 @@ namespace SpaInspector.Components
                     new()
                     {
                         AutoMargin = false,
-                        Ticks = TicksEnum.Empty,
+                        Ticks = TicksEnum.Outside,
                         Tick0 = 0,
                         DTick = unitIntensities.Max() < 1.0f ? 0.1 : 1,
-                        ZeroLine = false,
-                        ShowGrid = false,
+                        ZeroLine = true,
+                        ShowGrid = true,
                     },
+
                 },
                 AutoSize = false,
                 Height = 750,
                 Width = 1500,
+
             };
         }
     }
