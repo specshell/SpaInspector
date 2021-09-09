@@ -1,4 +1,4 @@
-﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
@@ -28,6 +28,9 @@ a, .btn-link {
 
 .validation-message {
     color: red;
+}
+.page-background-class {
+  background-image: url(../brewery.jpg)
 }
 
 #blazor-error-ui {

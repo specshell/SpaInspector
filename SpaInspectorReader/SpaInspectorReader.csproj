@@ -5,4 +5,8 @@
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Blazorise.Charts.Streaming" Version="0.9.4.4" />
+    </ItemGroup>
+
 </Project>
