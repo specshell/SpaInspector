@@ -1,10 +1,36 @@
 @using Plotly.Blazor
+@using Plotly.Blazor.LayoutLib
+@using Blazorise.Charts.Streaming
+
 
 @if (Data != null)
 {
-<div>
-  <PlotlyChart @bind-Config="Config" @bind-Layout="Layout" @bind-Data="Data" @ref="Chart" />
-</div>
-        <div class="text-left">
-          <button type="button" class="btn btn-primary" @onclick="() => Chart.Clear()">Clear</button>
-        </div>}
+
+    @if (Sliders != null)
+    {
+      <div class="row">
+        @foreach (var sldr in Sliders)
+        {
+          <div class="col-md-4">
+             <Slider TValue="double" Step="@sldr.Step" @bind-Value="@sldr.Value" Max="@sldr.Max" Min="@sldr.Min" />
+             <Span>@sldr.Value</Span>
+          </div>
+        }    
+      </div>
+    }
+
+
+
+  <div class="row">
+      <div class="col">
+        <LineChart @ref="lineChart" TItem="object" OptionsObject="@Options"  />    
+      </div>
+  </div>
+
+
+
+}
+
+
+
+
