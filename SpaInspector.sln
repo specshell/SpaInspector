@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspector", "SpaInspector\SpaInspector.csproj", "{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaInspector", "SpaInspector\SpaInspector.csproj", "{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader", "SpaFileReader\SpaFileReader.csproj", "{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaFileReader", "SpaFileReader\SpaFileReader.csproj", "{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Tests", "SpaFileReader.Tests\SpaFileReader.Tests.csproj", "{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaFileReader.Tests", "SpaFileReader.Tests\SpaFileReader.Tests.csproj", "{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Benchmark", "SpaFileReader.Benchmark\SpaFileReader.Benchmark.csproj", "{334B0623-2FB7-40AE-BEC1-303DC9569C31}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaFileReader.Benchmark", "SpaFileReader.Benchmark\SpaFileReader.Benchmark.csproj", "{334B0623-2FB7-40AE-BEC1-303DC9569C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader", "SpaInspectorReader\SpaInspectorReader.csproj", "{582536AC-3356-4167-B5C9-D59E353394E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaInspectorReader", "SpaInspectorReader\SpaInspectorReader.csproj", "{582536AC-3356-4167-B5C9-D59E353394E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaTestUtils", "SpaTestUtils\SpaTestUtils.csproj", "{B6F5CDB1-E497-47CA-94E8-53BB780383D7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaTestUtils", "SpaTestUtils\SpaTestUtils.csproj", "{B6F5CDB1-E497-47CA-94E8-53BB780383D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader.Tests", "SpaInspectorReader.Tests\SpaInspectorReader.Tests.csproj", "{C9C2C7F4-755E-4380-B507-420D47AFF220}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SpaInspectorReader.Tests", "SpaInspectorReader.Tests\SpaInspectorReader.Tests.csproj", "{C9C2C7F4-755E-4380-B507-420D47AFF220}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
