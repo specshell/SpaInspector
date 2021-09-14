@@ -1,0 +1,148 @@
+@using System.IO
+@using System.Globalization
+@using SpaInspectorReader
+
+<h1>SpaInspector</h1>
+<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
+  <Items>
+    <Step Name="step1">Step 1</Step>
+    <Step Name="step2">Step 2</Step>
+    <Step Name="step3">
+      <Marker>
+        <Icon Name="IconName.Flag" />
+      </Marker>
+      <Caption>
+        Finish
+      </Caption>
+    </Step>
+  </Items>
+  <Content>
+    <StepPanel Name="step1">
+      <p>
+        <label for="fileinput" class="label-wrapper">
+          <span class="oi oi-paperclip">
+            <InputFile OnChange="@OnInputFileChange" multiple />
+          </span>
+        </label>
+      </p>
+    </StepPanel>
+    <StepPanel Name="step2">
+      <div>
+        <EditForm Model="view">
+          <InputRadioGroup @bind-Value="view.Name">
+            @foreach (var option in rdOptions)
+{
+      <InputRadio Value="option" /> @option <br />}
+          </InputRadioGroup>
+        </EditForm>
+      </div>
+    </StepPanel>
+    <StepPanel Name="step3">
+      @switch (view.Name)
+      {
+        case "View1":
+    @if (spaList.Count > 0)
+    {
+    <h4>Spectras</h4>
+                    <div class="row">
+                      @foreach (var spa in spaList)
+                      {
+      <div class="col-md-6"> <SpectraView Spa="@spa" /> </div>}
+                    </div> }
+                  else if (loading)
+                  {
+    <p>Loading SPA files...</p> }
+  else
+  {
+    <p>Please select one or more SPA files</p>} break;
+
+  case "View2":
+    @if (spaList.Count > 0)
+    {
+    <h4>Spectras</h4>
+                    <div class="row">
+                      <div class="col-6"><View2 SpaList="@spaList" /></div>
+                    </div> }
+                  else if (loading)
+                  {
+    <p>Loading SPA files...</p> }
+  else
+  {
+    <p>Please select one or more SPA files</p>} break;
+  case "View3":
+    @if (spaList.Count > 0)
+    {
+    <h4>Spectras</h4>
+                    <div class="row">
+                      <div class="col-6"><View3 SpaList="@spaList" /></div>
+                    </div> }
+                  else if (loading)
+                  {
+    <p>Loading SPA files...</p> }
+  else
+  {
+    <p>Please select one or more SPA files</p>}break;
+
+}
+    </StepPanel>
+    <StepPanel Name="step4">
+      Content for finish.
+    </StepPanel>
+  </Content>
+</Steps>
+
+
+@code {
+    string selectedStep = "step1";
+
+    private Task OnSelectedStepChanged(string name)
+    {
+      selectedStep = name;
+
+      return Task.CompletedTask;
+    }
+
+    private readonly IList<Spa> spaList = new List<Spa>();
+
+    View view = new View()
+    {
+      Name = "View1" // default value
+    };
+    List<string> rdOptions = new List<string> { "View1", "View2", "View3" };
+
+    private bool loading;
+
+    public class View
+    {
+      public string Name { get; set; }
+    }
+
+    async IAsyncEnumerable<Spa> GetSpectraFromFiles(IEnumerable<IBrowserFile> list)
+    {
+      var spaFiles = list.Where(f => f.Name.EndsWith(".spa", true, CultureInfo.InvariantCulture)).ToList();
+      if (!spaFiles.Any()) yield break;
+      foreach (var spaFile in spaFiles)
+      {
+        var memoryStream = new MemoryStream();
+        await using (var stream = spaFile.OpenReadStream())
+        {
+          await stream.CopyToAsync(memoryStream);
+        }
+        memoryStream.Position = 0;
+        var spa = memoryStream.ReadSpa();
+        yield return spa;
+      }
+    }
+
+    private async Task OnInputFileChange(InputFileChangeEventArgs e)
+    {
+      const int maxAllowedFiles = 300;
+      spaList.Clear();
+      loading = true;
+
+      await foreach (var spa in GetSpectraFromFiles(e.GetMultipleFiles(maxAllowedFiles)))
+      {
+        spaList.Add(spa);
+      }
+      loading = false;
+    } }
