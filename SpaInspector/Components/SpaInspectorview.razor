@@ -1,99 +1,161 @@
 @using System.IO
 @using System.Globalization
 @using SpaInspectorReader
+<div class="b-layout-content">
+  <div class="row justify-content-start marginRow">
+    <div class="col-sm-12 text-center">
 
-<h1>SpaInspector</h1>
-<Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
-  <Items>
-    <Step Name="step1">Step 1</Step>
-    <Step Name="step2">Step 2</Step>
-    <Step Name="step3">
-      <Marker>
-        <Icon Name="IconName.Flag" />
-      </Marker>
-      <Caption>
-        Finish
-      </Caption>
-    </Step>
-  </Items>
-  <Content>
-    <StepPanel Name="step1">
-      <p>
-        <label for="fileinput" class="label-wrapper">
-          <span class="oi oi-paperclip">
-            <InputFile OnChange="@OnInputFileChange" multiple />
-          </span>
-        </label>
-      </p>
-    </StepPanel>
-    <StepPanel Name="step2">
-      <div>
-        <EditForm Model="view">
-          <InputRadioGroup @bind-Value="view.Name">
-            @foreach (var option in rdOptions)
-{
-      <InputRadio Value="option" /> @option <br />}
-          </InputRadioGroup>
-        </EditForm>
+      <img class="d-block mx-auto mb-4" src="/images/logograph.svg" alt width="72" height="72">
+      <h1 class="display-5 fw-bold">Spa Inspector</h1>
+      <div class="col-lg-6 mx-auto">
+        <p class="lead mb-4 text-center">
+          SpaInspector reads Spa or Spg files and visualize them into graphs. To use the SpaInspector, please follow the steps below. You can upload 1 or more files. <br/>Different views in the list are displayed below.
+          <Accordion>
+            <Collapse Visible="@collapse1Visible">
+              <CollapseHeader>
+                <Heading Size="HeadingSize.Is5">
+                  <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">View 1</Button>
+                </Heading>
+              </CollapseHeader>
+              <CollapseBody>
+                Display 2 or more files horizontally.
+              </CollapseBody>
+            </Collapse>
+            <Collapse Visible="@collapse2Visible">
+              <CollapseHeader>
+                <Heading Size="HeadingSize.Is5">
+                  <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">View 2</Button>
+                </Heading>
+              </CollapseHeader>
+              <CollapseBody>
+                Display 2 or more graphs in one chart.
+              </CollapseBody>
+            </Collapse>
+            <Collapse Visible="@collapse3Visible">
+              <CollapseHeader>
+                <Heading Size="HeadingSize.Is5">
+                  <Button Clicked="@(()=>collapse1Visible = !collapse1Visible)">View 3</Button>
+                </Heading>
+              </CollapseHeader>
+              <CollapseBody>
+                Allows configure the y value of 2 or more graphs by using the slider.
+              </CollapseBody>
+            </Collapse>
+          </Accordion>
+        </p>
       </div>
-    </StepPanel>
-    <StepPanel Name="step3">
-      @switch (view.Name)
-      {
-        case "View1":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      @foreach (var spa in spaList)
-                      {
-      <div class="col-md-6"> <SpectraView Spa="@spa" /> </div>}
-                    </div> }
-                  else if (loading)
-                  {
-    <p>Loading SPA files...</p> }
-  else
-  {
-    <p>Please select one or more SPA files</p>} break;
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 text-center">
+      <Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
 
-  case "View2":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      <div class="col-6"><View2 SpaList="@spaList" /></div>
-                    </div> }
-                  else if (loading)
-                  {
-    <p>Loading SPA files...</p> }
-  else
+        <Items>
+          <Step Name="step0">
+            <Marker>
+              <Icon Name="IconName.Star" />
+            </Marker>
+            <Caption>
+              Start
+            </Caption>
+          </Step>
+          <Step Name="step1">Step 1</Step>
+          <Step Name="step2">Step 2</Step>
+          <Step Name="step3">
+
+            <Marker>
+              <Icon Name="IconName.Flag" />
+            </Marker>
+            <Caption>
+              Finish
+            </Caption>
+          </Step>
+        </Items>
+        <Content>
+          <StepPanel Name="step0">
+            Proccesed all the steps to see Spa or Spg files.
+          </StepPanel>
+          <StepPanel Name="step1">
+            <p>
+              <InputFile OnChange="@OnInputFileChange" multiple />
+            </p>
+          </StepPanel>
+          <StepPanel Name="step2">
+            <div>
+              <EditForm Model="view">
+                <InputRadioGroup @bind-Value="view.Name">
+                  @foreach (var option in rdOptions)
+      {
+<InputRadio Value="option" /> @option <br />}
+                </InputRadioGroup>
+              </EditForm>
+            </div>
+          </StepPanel>
+          <StepPanel Name="step3">
+            @switch (view.Name)
+            {
+              case "View1":
+  @if (spaList.Count > 0)
   {
-    <p>Please select one or more SPA files</p>} break;
-  case "View3":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      <div class="col-6"><View3 SpaList="@spaList" /></div>
-                    </div> }
-                  else if (loading)
+<h4>Spectras</h4>
+                <div class="row">
+                  @foreach (var spa in spaList)
                   {
-    <p>Loading SPA files...</p> }
-  else
-  {
-    <p>Please select one or more SPA files</p>}break;
+  <div class="col-md-6"> <SpectraView Spa="@spa" /> </div>}
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>} break;
+
+case "View2":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+                <div class="row">
+                  <div class="col-6"><View2 SpaList="@spaList" /></div>
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>} break;
+case "View3":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+                <div class="row">
+                  <div class="col-6"><View3 SpaList="@spaList" /></div>
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>}break;
 
 }
-    </StepPanel>
-    <StepPanel Name="step4">
-      Content for finish.
-    </StepPanel>
-  </Content>
-</Steps>
+          </StepPanel>
+          <StepPanel Name="step4">
+            Content for finish.
+          </StepPanel>
+        </Content>
+      </Steps>
+    </div>
+  </div>
+</div>
+
 
 
 @code {
-    string selectedStep = "step1";
+    bool collapse1Visible = true;
+    bool collapse2Visible = true;
+    bool collapse3Visible = true;
+
+    string selectedStep = "step0";
 
     private Task OnSelectedStepChanged(string name)
     {
@@ -109,7 +171,6 @@
       Name = "View1" // default value
     };
     List<string> rdOptions = new List<string> { "View1", "View2", "View3" };
-
     private bool loading;
 
     public class View
