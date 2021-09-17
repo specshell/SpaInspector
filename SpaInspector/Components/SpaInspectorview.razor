@@ -1,8 +1,11 @@
 @using System.IO
 @using System.Globalization
 @using SpaInspectorReader
-
-<h1>SpaInspector</h1>
+<div class="card text-center m-2 bg-dark text-white m-2">
+  <div class="card-body">
+    <h1>SpaInspector</h1>
+  </div>
+</div>
 <Steps SelectedStep="@selectedStep" SelectedStepChanged="@OnSelectedStepChanged">
   <Items>
     <Step Name="step1">Step 1</Step>
@@ -12,7 +15,7 @@
         <Icon Name="IconName.Flag" />
       </Marker>
       <Caption>
-        Finish
+        Result
       </Caption>
     </Step>
   </Items>
@@ -32,7 +35,7 @@
           <InputRadioGroup @bind-Value="view.Name">
             @foreach (var option in rdOptions)
 {
-      <InputRadio Value="option" /> @option <br />}
+<InputRadio Value="option" /> @option <br />}
           </InputRadioGroup>
         </EditForm>
       </div>
@@ -41,47 +44,47 @@
       @switch (view.Name)
       {
         case "View1":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      @foreach (var spa in spaList)
-                      {
-      <div class="col-md-6"> <SpectraView Spa="@spa" /> </div>}
-                    </div> }
-                  else if (loading)
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+                <div class="row">
+                  @foreach (var spa in spaList)
                   {
-    <p>Loading SPA files...</p> }
-  else
-  {
-    <p>Please select one or more SPA files</p>} break;
+  <div class="col-md-6"> <SpectraView Spa="@spa" /> </div>}
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>} break;
 
-  case "View2":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      <div class="col-6"><View2 SpaList="@spaList" /></div>
-                    </div> }
-                  else if (loading)
-                  {
-    <p>Loading SPA files...</p> }
-  else
-  {
-    <p>Please select one or more SPA files</p>} break;
-  case "View3":
-    @if (spaList.Count > 0)
-    {
-    <h4>Spectras</h4>
-                    <div class="row">
-                      <div class="col-6"><View3 SpaList="@spaList" /></div>
-                    </div> }
-                  else if (loading)
-                  {
-    <p>Loading SPA files...</p> }
-  else
-  {
-    <p>Please select one or more SPA files</p>}break;
+case "View2":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+                <div class="row">
+                  <div class="col-6"><View2 SpaList="@spaList" /></div>
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>} break;
+case "View3":
+@if (spaList.Count > 0)
+{
+<h4>Spectras</h4>
+                <div class="row">
+                  <div class="col-6"><View3 SpaList="@spaList" /></div>
+                </div> }
+              else if (loading)
+              {
+<p>Loading SPA files...</p> }
+else
+{
+<p>Please select one or more SPA files</p>}break;
 
 }
     </StepPanel>
