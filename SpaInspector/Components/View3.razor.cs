@@ -177,7 +177,7 @@ namespace SpaInspector.Components
 
                 Data.Add(new ScatterGl
                 {
-                    Name = spa.Title, // <-- not sure what title you want but you could grab something from one of the headers?
+                    Name = spa.Title, 
                     Mode = ModeFlag.Lines,
                     Y = unitIntensities.Reverse().Cast<object>().ToArray(),
                     X = Waves,

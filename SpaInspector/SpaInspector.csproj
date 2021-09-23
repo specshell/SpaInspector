@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Components\View4.razor.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="Components\Validate.razor" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\View4.razor.cs" />
   </ItemGroup>
 
   <ItemGroup>
