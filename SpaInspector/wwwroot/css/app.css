@@ -32,6 +32,9 @@ a, .btn-link {
 .page-background-class {
   background-image: url(../brewery.jpg)
 }
+.marginRow {
+  margin-bottom: 0px !important;
+}
 
 #blazor-error-ui {
     background: lightyellow;
