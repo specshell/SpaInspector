@@ -10,5 +10,5 @@ RUN dotnet publish "SpaInspector.csproj" -c Release -o /app/publish
 
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
-COPY --from=publish /app/publish/BlazorWasmDocker/dist .
+COPY --from=publish /app/publish/SpaInspector/dist .
 COPY nginx.conf /etc/nginx/nginx.conf
