@@ -3,11 +3,11 @@ WORKDIR /src
 COPY . .
 RUN dotnet restore "SpaInspector/SpaInspector.csproj"
 WORKDIR "/src/SpaInspector"
-RUN dotnet build "SpaInspector.csproj" -c Release -o /app/build
 
-FROM build AS publish
+
+
 WORKDIR "/src/SpaInspector"
-RUN dotnet publish "SpaInspector.csproj" -c Release -o /app/publish
+RUN dotnet publish "SpaInspector.csproj" -c Release -o /app
 
 FROM nginx:alpine AS final
 WORKDIR /usr/share/nginx/html
