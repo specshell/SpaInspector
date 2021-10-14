@@ -1,4 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+EXPOSE 80
 WORKDIR /src
 COPY . .
 RUN dotnet restore "SpaInspector/SpaInspector.csproj"
