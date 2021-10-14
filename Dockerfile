@@ -1,3 +1,8 @@
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.0-buster-slim AS base
+WORKDIR /app
+EXPOSE 80
+
+
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 EXPOSE 80
 WORKDIR /src
