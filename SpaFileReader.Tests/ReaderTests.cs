@@ -26,7 +26,7 @@ namespace SpaFileReader.Tests
         [Fact]
         public void SpanReaderReadAsFloatsFileTest()
         {
-            var yUnits = SpaFile.ReadYUnitAsFloatArray(TestFile);
+            var yUnits = SpaFile.ReadYUnitAsSpanFloat(TestFile);
             Assert.Equal(6846, yUnits.Length);
             Assert.Equal(0.03549831f, yUnits[0]);
             Assert.Equal(0.009505022f, yUnits[^1]);

@@ -4,9 +4,7 @@ namespace SpaFileReader.Benchmark
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            var summary = BenchmarkRunner.Run<Benchmarks>();
-        }
+        private static void Main(string[] args)
+            => BenchmarkSwitcher.FromAssembly(typeof(Program).Assembly).Run(args);
     }
 }

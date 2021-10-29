@@ -1,0 +1,20 @@
+#!csharp
+
+#r "nuget: SpaFileReader"
+
+#!csharp
+
+using SpaFileReader;
+using System.IO;
+using System.Text.Json;
+
+var bytes = File.ReadAllBytes("TestFiles/test1.spa");
+var absorbance = SpaFile.ReadYUnitAsDoubleArray(bytes);
+
+public class Spa {
+  public double[] Absorbance { get; set; }
+}
+
+var spa = new Spa { Absorbance = absorbance };
+var json = JsonSerializer.Serialize(spa);
+File.WriteAllText("absorbance.json", json);

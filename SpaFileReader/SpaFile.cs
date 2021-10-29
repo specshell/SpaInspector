@@ -4,14 +4,16 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace SpaFileReader
 {
+    [PublicAPI]
     public static class SpaFile
     {
         private static readonly ArrayPool<byte> Pool = ArrayPool<byte>.Shared;
         private const short YUnitFlag = 3;
-        private const int PositionsAddress = 0x000130;
+        private const int PositionsAddress = 304;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Span<byte> ReadYUnitAsSpanByte(byte[] bytes)
@@ -42,14 +44,14 @@ namespace SpaFileReader
         {
             Span<byte> flagSpan = stackalloc byte[16];
 
-            var fileStream = File.OpenRead(file);
-            fileStream.Seek(304, SeekOrigin.Begin);
+            var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
+            fileStream.Seek(PositionsAddress, SeekOrigin.Begin);
             byte flag;
             do
             {
                 fileStream.Read(flagSpan);
                 flag = flagSpan.ReadByteAt(0);
-            } while (flag != 3);
+            } while (flag != YUnitFlag);
 
             var startPosition = flagSpan.ReadInt32At(2);
             var size = flagSpan.ReadInt32At(6);
@@ -70,14 +72,14 @@ namespace SpaFileReader
         {
             Span<byte> flagSpan = stackalloc byte[16];
 
-            var fileStream = File.OpenRead(file);
-            fileStream.Seek(304, SeekOrigin.Begin);
+            var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
+            fileStream.Seek(PositionsAddress, SeekOrigin.Begin);
             byte flag;
             do
             {
                 fileStream.Read(flagSpan);
                 flag = flagSpan.ReadByteAt(0);
-            } while (flag != 3);
+            } while (flag != YUnitFlag);
 
             var startPosition = flagSpan.ReadInt32At(2);
             var size = flagSpan.ReadInt32At(6);
@@ -100,14 +102,14 @@ namespace SpaFileReader
         {
             Span<byte> flagSpan = stackalloc byte[16];
 
-            var fileStream = File.OpenRead(file);
-            fileStream.Seek(304, SeekOrigin.Begin);
+            var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, FileOptions.RandomAccess);
+            fileStream.Seek(PositionsAddress, SeekOrigin.Begin);
             byte flag;
             do
             {
                 fileStream.Read(flagSpan);
                 flag = flagSpan.ReadByteAt(0);
-            } while (flag != 3);
+            } while (flag != YUnitFlag);
 
             var startPosition = flagSpan.ReadInt32At(2);
             var size = flagSpan.ReadInt32At(6);
@@ -132,19 +134,17 @@ namespace SpaFileReader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<float[]> ReadYUnitAsFloatArrayAsync(string file)
+        public static Task<float[]> ReadYUnitAsFloatArrayAsync(string file)
         {
-            var bytes = await File.ReadAllBytesAsync(file);
-            var yUnitAsFloatArray = ReadYUnitAsFloatArray(bytes);
-            return yUnitAsFloatArray;
+            // spa files are so small that true async file read does not make sense...
+            //
+            return Task.FromResult(ReadYUnitAsFloatArray(file));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<double[]> ReadYUnitAsDoubleArrayAsync(string file)
+        public static Task<double[]> ReadYUnitAsDoubleArrayAsync(string file)
         {
-            var bytes = await File.ReadAllBytesAsync(file);
-            var yUnitAsDoubleArray = ReadYUnitAsDoubleArray(bytes);
-            return yUnitAsDoubleArray;
+            return Task.FromResult(ReadYUnitAsDoubleArray(file));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -220,8 +220,8 @@ namespace SpaFileReader
         {
             var position = PositionsAddress;
 
-            short flag = 1;
-            while (flag != expectedFlag)
+            byte flag;
+            do
             {
                 flag = bytes.ReadByteAt(position);
                 if (flag == expectedFlag)
@@ -232,7 +232,7 @@ namespace SpaFileReader
                 }
 
                 position += 16;
-            }
+            } while (flag != expectedFlag) ;
 
             return (0, 0);
         }
@@ -262,27 +262,27 @@ namespace SpaFileReader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte ReadByteAt(this ref ReadOnlySpan<byte> data, int offset)
+        public static byte ReadByteAt(this byte[] data, int offset)
         {
             return offset + 1 > data.Length
                 ? (byte)0
-                : MemoryMarshal.Read<byte>(data.Slice(offset, 1));
+                : MemoryMarshal.Read<byte>(data.AsSpan(offset, 1));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static short ReadInt16At(this ref ReadOnlySpan<byte> data, int offset)
+        public static short ReadInt16At(this byte[] data, int offset)
         {
             return offset + 2 > data.Length
                 ? (short)0
-                : MemoryMarshal.Read<short>(data.Slice(offset, 2));
+                : MemoryMarshal.Read<short>(data.AsSpan(offset, 2));
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int ReadInt32At(this ref ReadOnlySpan<byte> data, int offset)
+        public static int ReadInt32At(this byte[] data, int offset)
         {
             return offset + 4 > data.Length
                 ? 0
-                : MemoryMarshal.Read<int>(data.Slice(offset, 4));
+                : MemoryMarshal.Read<int>(data.AsSpan(offset, 4));
         }
     }
 }

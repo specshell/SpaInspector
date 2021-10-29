@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
 using SpaInspectorReader;
@@ -19,45 +20,66 @@ namespace SpaFileReader.Benchmark
             _bytes = File.ReadAllBytes(TestFile);
         }
 
-        [Benchmark]
-        public Span<float> SpanReadFloats()
-        {
-            var absorbance = SpaFile.ReadYUnitAsSpanFloat(_bytes);
-            return absorbance;
-        }
-
-        [Benchmark]
-        public float[] SpanReadFloatArray()
-        {
-            var absorbance = SpaFile.ReadYUnitAsFloatArray(_bytes);
-            return absorbance;
-        }
-
-        [Benchmark]
-        public Span<byte> SpanReadBytes()
-        {
-            var absorbance = SpaFile.ReadYUnitAsSpanByte(_bytes);
-            return absorbance;
-        }
-
-        [Benchmark]
-        public Span<double> SpanReadDouble()
-        {
-            var absorbance = SpaFile.ReadYUnitAsSpanDouble(_bytes);
-            return absorbance;
-        }
-
-        [Benchmark]
-        public double[] SpanReadDoubleArray()
-        {
-            var absorbance = SpaFile.ReadYUnitAsDoubleArray(_bytes);
-            return absorbance;
-        }
+        // [Benchmark]
+        // public Span<float> SpanReadFloats()
+        // {
+        //     var absorbance = SpaFile.ReadYUnitAsSpanFloat(_bytes);
+        //     return absorbance;
+        // }
+        //
+        // [Benchmark]
+        // public float[] SpanReadFloatArray()
+        // {
+        //     var absorbance = SpaFile.ReadYUnitAsFloatArray(_bytes);
+        //     return absorbance;
+        // }
+        //
+        // [Benchmark]
+        // public Span<byte> SpanReadBytes()
+        // {
+        //     var absorbance = SpaFile.ReadYUnitAsSpanByte(_bytes);
+        //     return absorbance;
+        // }
+        //
+        // [Benchmark]
+        // public Span<double> SpanReadDouble()
+        // {
+        //     var absorbance = SpaFile.ReadYUnitAsSpanDouble(_bytes);
+        //     return absorbance;
+        // }
+        //
+        // [Benchmark]
+        // public double[] SpanReadDoubleArray()
+        // {
+        //     var absorbance = SpaFile.ReadYUnitAsDoubleArray(_bytes);
+        //     return absorbance;
+        // }
 
         [Benchmark]
         public double[] ArrayReadDoubleFile()
         {
             var absorbance = SpaFile.ReadYUnitAsDoubleArray(TestFile);
+            return absorbance;
+        }
+
+        [Benchmark]
+        public Span<double> SpanReadDoubleFile()
+        {
+            var absorbance = SpaFile.ReadYUnitAsSpanDouble(TestFile);
+            return absorbance;
+        }
+
+        [Benchmark]
+        public async Task<double[]> ReadDoubleFileAsync()
+        {
+            var absorbance = await SpaFile.ReadYUnitAsDoubleArrayAsync(TestFile);
+            return absorbance;
+        }
+
+        [Benchmark]
+        public async Task<float[]> ReadFloatFileAsync()
+        {
+            var absorbance = await SpaFile.ReadYUnitAsFloatArrayAsync(TestFile);
             return absorbance;
         }
 
@@ -75,20 +97,13 @@ namespace SpaFileReader.Benchmark
             return absorbance;
         }
 
-        [Benchmark]
-        public Span<double> SpanReadDoubleFile()
-        {
-            var absorbance = SpaFile.ReadYUnitAsSpanDouble(TestFile);
-            return absorbance;
-        }
-
-        [Benchmark]
-        public float[] BinaryReaderReadAbsorbance()
-        {
-            Stream stream = new MemoryStream(_bytes);
-            var read = new Read(stream);
-            var absorbance = read.ReadBinaryToSpa().UnitIntensities;
-            return absorbance;
-        }
+        // [Benchmark]
+        // public float[] BinaryReaderReadAbsorbance()
+        // {
+        //     Stream stream = new MemoryStream(_bytes);
+        //     var read = new Read(stream);
+        //     var absorbance = read.ReadBinaryToSpa().UnitIntensities;
+        //     return absorbance;
+        // }
     }
 }
