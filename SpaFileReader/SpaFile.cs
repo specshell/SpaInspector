@@ -11,6 +11,7 @@ namespace SpaFileReader
         private const short YUnitFlag = 3;
         private const short InterferogramFlag = 102;
         private const short BackgroundInterferogramFlag = 103;
+        private const int SizeAddress = 0x000126;
         private const int PositionsAddress = 0x000130;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -197,12 +198,13 @@ namespace SpaFileReader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static (int start, int length) ReadSpecificFlagPositions(ref Span<byte> bytes, short expectedFlag)
         {
+            var size = bytes.ReadInt16At(SizeAddress);
+
             var position = PositionsAddress;
 
-            short flag = 1;
-            while (flag != expectedFlag)
+            for (var i = 0; i <= size; i++)
             {
-                flag = bytes.ReadByteAt(position);
+                short flag = bytes.ReadByteAt(position);
                 if (flag == expectedFlag)
                 {
                     var start = bytes.ReadInt32At(position + 2);
