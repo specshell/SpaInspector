@@ -11,10 +11,11 @@
     <Optimize>true</Optimize>
     <Configuration>Release</Configuration>
     <IsPackable>false</IsPackable>
+    <BenchmarkDotNet_PackageVersion>0.13.1</BenchmarkDotNet_PackageVersion>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.13.0" />
-    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="0.13.0" />
+    <PackageReference Include="BenchmarkDotNet" Version="$(BenchmarkDotNet_PackageVersion)" />
+    <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNet_PackageVersion)" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SpaFileReader\SpaFileReader.csproj" />
