@@ -9,6 +9,9 @@ namespace SpaFileReader
     public static class SpaFile
     {
         private const short YUnitFlag = 3;
+        private const short InterferogramFlag = 102;
+        private const short BackgroundInterferogramFlag = 103;
+        private const int SizeAddress = 0x000126;
         private const int PositionsAddress = 0x000130;
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -24,6 +27,22 @@ namespace SpaFileReader
         {
             var span = bytes.AsSpan();
             var yUnitAsSpanFloat = ReadYUnitAsSpanFloat(ref span);
+            return yUnitAsSpanFloat;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<float> ReadInterferogramAsSpanFloat(byte[] bytes)
+        {
+            var span = bytes.AsSpan();
+            var yUnitAsSpanFloat = ReadInterferogramAsSpanFloat(ref span);
+            return yUnitAsSpanFloat;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<float> ReadBackgroundInterogramAsSpanFloat(byte[] bytes)
+        {
+            var span = bytes.AsSpan();
+            var yUnitAsSpanFloat = ReadBackgroundInterogramAsSpanFloat(ref span);
             return yUnitAsSpanFloat;
         }
 
@@ -119,6 +138,38 @@ namespace SpaFileReader
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<byte> ReadInterferogramAsSpanByte(ref Span<byte> bytes)
+        {
+            var (start, length) = ReadSpecificFlagPositions(ref bytes, InterferogramFlag);
+            var yUnitAsBytes = bytes.Slice(start, length);
+            return yUnitAsBytes;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<float> ReadInterferogramAsSpanFloat(ref Span<byte> bytes)
+        {
+            var yUnitAsBytes = ReadInterferogramAsSpanByte(ref bytes);
+            var yUnitAsFloats = MemoryMarshal.Cast<byte, float>(yUnitAsBytes);
+            return yUnitAsFloats;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<byte> ReadBackgroundInterferogramAsSpanByte(ref Span<byte> bytes)
+        {
+            var (start, length) = ReadSpecificFlagPositions(ref bytes, BackgroundInterferogramFlag);
+            var yUnitAsBytes = bytes.Slice(start, length);
+            return yUnitAsBytes;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Span<float> ReadBackgroundInterogramAsSpanFloat(ref Span<byte> bytes)
+        {
+            var yUnitAsBytes = ReadBackgroundInterferogramAsSpanByte(ref bytes);
+            var yUnitAsFloats = MemoryMarshal.Cast<byte, float>(yUnitAsBytes);
+            return yUnitAsFloats;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double[] ReadYUnitAsDoubleArray(ref Span<byte> bytes)
         {
             var yUnitAsFloats = ReadYUnitAsSpanFloat(ref bytes);
@@ -147,12 +198,13 @@ namespace SpaFileReader
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static (int start, int length) ReadSpecificFlagPositions(ref Span<byte> bytes, short expectedFlag)
         {
+            var size = bytes.ReadInt16At(SizeAddress);
+
             var position = PositionsAddress;
 
-            short flag = 1;
-            while (flag != expectedFlag)
+            for (var i = 0; i <= size; i++)
             {
-                flag = bytes.ReadByteAt(position);
+                short flag = bytes.ReadByteAt(position);
                 if (flag == expectedFlag)
                 {
                     var start = bytes.ReadInt32At(position + 2);

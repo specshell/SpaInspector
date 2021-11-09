@@ -7,10 +7,12 @@ namespace SpaFileReader.Tests
     public class ReaderTests
     {
         private readonly byte[] _bytes;
+        private readonly byte[] _noInterferogramBytes;
 
         public ReaderTests()
         {
             _bytes = File.ReadAllBytes(TestFile("test1.spa"));
+            _noInterferogramBytes = File.ReadAllBytes(TestFile("test2.spa"));
         }
 
         [Fact]
@@ -54,6 +56,32 @@ namespace SpaFileReader.Tests
         {
             var yUnits = SpaFile.ReadYUnitAsSpanByte(_bytes);
             Assert.Equal(27384, yUnits.Length);
+        }
+
+        [Fact]
+        public void SpanReaderReadInterferogramAsFloatsTest()
+        {
+            var interferogram = SpaFile.ReadInterferogramAsSpanFloat(_bytes);
+            Assert.Equal(12200, interferogram.Length);
+            Assert.Equal(-1.9441359E-05f, interferogram[0]);
+            Assert.Equal(-0.0009917123f, interferogram[^1]);
+        }
+
+        [Fact]
+        public void SpanReaderReadBackgroundInterferogramAsFloatsTest()
+        {
+            var interferogram = SpaFile.ReadBackgroundInterogramAsSpanFloat(_bytes);
+            Assert.Equal(12200, interferogram.Length);
+            Assert.Equal(0.00012780126f, interferogram[0]);
+            Assert.Equal(-0.00088237826f, interferogram[^1]);
+        }
+
+        [Fact]
+        public void SpanReaderReadNoBackgroundInterferogramAsFloatsTest()
+        {
+            var interferogram = SpaFile.ReadBackgroundInterogramAsSpanFloat(_noInterferogramBytes);
+            Assert.Equal(0, interferogram.Length);
+            Assert.True(interferogram.IsEmpty);
         }
     }
 }
