@@ -18,8 +18,8 @@
     <PackageReference Include="BenchmarkDotNet.Diagnostics.Windows" Version="$(BenchmarkDotNet_PackageVersion)" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SpaFileReader\SpaFileReader.csproj" />
-    <ProjectReference Include="..\SpaInspectorReader\SpaInspectorReader.csproj" />
+    <ProjectReference Include="..\..\src\SpaFileReader\SpaFileReader.csproj" />
+    <ProjectReference Include="..\..\src\SpaInspectorReader\SpaInspectorReader.csproj" />
     <ProjectReference Include="..\SpaTestUtils\SpaTestUtils.csproj" />
   </ItemGroup>
 </Project>

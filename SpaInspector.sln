@@ -3,19 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30711.63
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspector", "SpaInspector\SpaInspector.csproj", "{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspector", "src\SpaInspector\SpaInspector.csproj", "{9920106C-8ADD-4C6D-9296-A9EBAAF6C826}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader", "SpaFileReader\SpaFileReader.csproj", "{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader", "src\SpaFileReader\SpaFileReader.csproj", "{19EA9E94-D5A2-41A9-8AF4-78FA926EB756}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Tests", "SpaFileReader.Tests\SpaFileReader.Tests.csproj", "{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Tests", "tests\SpaFileReader.Tests\SpaFileReader.Tests.csproj", "{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Benchmark", "SpaFileReader.Benchmark\SpaFileReader.Benchmark.csproj", "{334B0623-2FB7-40AE-BEC1-303DC9569C31}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaFileReader.Benchmark", "tests\SpaFileReader.Benchmark\SpaFileReader.Benchmark.csproj", "{334B0623-2FB7-40AE-BEC1-303DC9569C31}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader", "SpaInspectorReader\SpaInspectorReader.csproj", "{582536AC-3356-4167-B5C9-D59E353394E5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader", "src\SpaInspectorReader\SpaInspectorReader.csproj", "{582536AC-3356-4167-B5C9-D59E353394E5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaTestUtils", "SpaTestUtils\SpaTestUtils.csproj", "{B6F5CDB1-E497-47CA-94E8-53BB780383D7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaTestUtils", "tests\SpaTestUtils\SpaTestUtils.csproj", "{B6F5CDB1-E497-47CA-94E8-53BB780383D7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader.Tests", "SpaInspectorReader.Tests\SpaInspectorReader.Tests.csproj", "{C9C2C7F4-755E-4380-B507-420D47AFF220}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaInspectorReader.Tests", "tests\SpaInspectorReader.Tests\SpaInspectorReader.Tests.csproj", "{C9C2C7F4-755E-4380-B507-420D47AFF220}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D96676AE-CE29-4512-887C-495A429EF357}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{3DFF044E-ECEA-4154-9E42-3FAD8C6F2C02}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -57,5 +61,14 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FDBA46FB-3BA1-4AF7-9ADC-E4196AE40C7A}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19EA9E94-D5A2-41A9-8AF4-78FA926EB756} = {D96676AE-CE29-4512-887C-495A429EF357}
+		{334B0623-2FB7-40AE-BEC1-303DC9569C31} = {3DFF044E-ECEA-4154-9E42-3FAD8C6F2C02}
+		{57FB32EE-03CD-4D01-AE3A-00E3F5D57E9D} = {3DFF044E-ECEA-4154-9E42-3FAD8C6F2C02}
+		{9920106C-8ADD-4C6D-9296-A9EBAAF6C826} = {D96676AE-CE29-4512-887C-495A429EF357}
+		{582536AC-3356-4167-B5C9-D59E353394E5} = {D96676AE-CE29-4512-887C-495A429EF357}
+		{C9C2C7F4-755E-4380-B507-420D47AFF220} = {3DFF044E-ECEA-4154-9E42-3FAD8C6F2C02}
+		{B6F5CDB1-E497-47CA-94E8-53BB780383D7} = {3DFF044E-ECEA-4154-9E42-3FAD8C6F2C02}
 	EndGlobalSection
 EndGlobal

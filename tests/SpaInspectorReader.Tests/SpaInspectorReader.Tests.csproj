@@ -19,7 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\SpaInspectorReader\SpaInspectorReader.csproj" />
+        <ProjectReference Include="..\..\src\SpaInspectorReader\SpaInspectorReader.csproj" />
         <ProjectReference Include="..\SpaTestUtils\SpaTestUtils.csproj" />
     </ItemGroup>
 
