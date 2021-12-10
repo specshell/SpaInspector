@@ -1,8 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <IsPackable>false</IsPackable>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <ItemGroup>
@@ -19,8 +20,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\SpaFileReader\SpaFileReader.csproj" />
-      <ProjectReference Include="..\SpaTestUtils\SpaTestUtils.csproj" />
+        <ProjectReference Include="..\..\src\SpaFileReader\SpaFileReader.csproj" />
+        <ProjectReference Include="..\SpaTestUtils\SpaTestUtils.csproj" />
     </ItemGroup>
 
 </Project>

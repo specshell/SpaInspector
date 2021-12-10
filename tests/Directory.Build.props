@@ -1,0 +1,11 @@
+<Project>
+  <PropertyGroup Condition="'$(IsUnitTestProject)' == ''">
+    <IsUnitTestProject>false</IsUnitTestProject>
+    <IsUnitTestProject Condition="$(MSBuildProjectName.EndsWith('.UnitTests')) or $(MSBuildProjectName.EndsWith('.Tests'))">true</IsUnitTestProject>
+  </PropertyGroup>
+
+  <ItemGroup Label="Unit Tests Usings" Condition="'$(IsUnitTestProject)' == 'true'">
+    <Using Include="Xunit" />
+    <Using Include="SpaTestUtils.TestFixture" Static="true" />
+  </ItemGroup>
+</Project>

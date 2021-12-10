@@ -1,10 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="JetBrains.Annotations" Version="2021.3.0" PrivateAssets="all" />
         <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -21,7 +22,8 @@
         <Owners>Specshell</Owners>
         <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)) Specshell. All rights reserved</Copyright>
         <TreatWarningsAsErrors Condition="$(TreatWarningsAsErrors) == ''">true</TreatWarningsAsErrors>
-        <LangVersion Condition="$(LangVersion) == ''">9.0</LangVersion>
+        <LangVersion Condition="$(LangVersion) == ''">10.0</LangVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(RELEASE)' == 'true'">
