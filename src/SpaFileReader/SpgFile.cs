@@ -1,8 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using JetBrains.Annotations;
-
-namespace SpaFileReader;
+﻿namespace SpaFileReader;
 
 [PublicAPI]
 public static class SpgFile
