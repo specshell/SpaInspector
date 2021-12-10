@@ -3,30 +3,30 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-    - main
+      - main
 
 jobs:
   deploy-to-github-pages:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
-      run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' */wwwroot/index.html
-    
-    # copy index.html to 404.html to serve the same file when a file is not found
-    - name: copy index.html to 404.html
-      run: cp ${{ github.event.repository.name }}/wwwroot/index.html ${{ github.event.repository.name }}/wwwroot/404.html
-      
-    # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
-    - name: Add .nojekyll file
-      run: touch ${{ github.event.repository.name }}/wwwroot/.nojekyll
+      - name: Change base-tag in index.html from / to ${{ github.event.repository.name }}
+        run: sed -i 's/<base href="\/" \/>/<base href="\/${{ github.event.repository.name }}\/" \/>/g' */wwwroot/index.html
 
-    - name: Publish Blazor project
-      run: dotnet publish -c Release -o release --nologo
+      # copy index.html to 404.html to serve the same file when a file is not found
+      - name: copy index.html to 404.html
+        run: cp ${{ github.event.repository.name }}/wwwroot/index.html ${{ github.event.repository.name }}/wwwroot/404.html
 
-    - name: Commit wwwroot to GitHub Pages
-      uses: JamesIves/github-pages-deploy-action@4.1.7
-      with:
-        branch: gh-pages
-        folder: release/wwwroot
+      # add .nojekyll file to tell GitHub pages to not treat this as a Jekyll project. (Allow files and folders starting with an underscore)
+      - name: Add .nojekyll file
+        run: touch ${{ github.event.repository.name }}/wwwroot/.nojekyll
+
+      - name: Publish Blazor project
+        run: dotnet publish -c Release -o release --nologo
+
+      - name: Commit wwwroot to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@4.1.7
+        with:
+          branch: gh-pages
+          folder: release/wwwroot
