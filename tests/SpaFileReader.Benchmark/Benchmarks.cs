@@ -1,11 +1,4 @@
-﻿using System;
-using System.IO;
-using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Order;
-using SpaInspectorReader;
-using static SpaTestUtils.TestFixture;
-
-namespace SpaFileReader.Benchmark;
+﻿namespace SpaFileReader.Benchmark;
 
 [MemoryDiagnoser]
 [Orderer(SummaryOrderPolicy.FastestToSlowest)]

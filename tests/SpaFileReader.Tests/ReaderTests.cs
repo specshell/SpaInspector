@@ -1,8 +1,4 @@
-﻿using System.IO;
-using Xunit;
-using static SpaTestUtils.TestFixture;
-
-namespace SpaFileReader.Tests;
+﻿namespace SpaFileReader.Tests;
 
 public class ReaderTests
 {

@@ -1,5 +1,3 @@
-using BenchmarkDotNet.Running;
-
 namespace SpaFileReader.Benchmark;
 
 public class Program
