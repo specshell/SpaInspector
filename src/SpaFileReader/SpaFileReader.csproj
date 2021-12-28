@@ -17,7 +17,7 @@
         <IncludeSymbols>true</IncludeSymbols>
         <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
         <Nullable>enable</Nullable>
-        <Authors>Spechell</Authors>
+        <Authors>Specshell</Authors>
         <Company>Specshell</Company>
         <Owners>Specshell</Owners>
         <Copyright>Copyright $([System.DateTime]::UtcNow.ToString(yyyy)) Specshell. All rights reserved</Copyright>
