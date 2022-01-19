@@ -122,6 +122,12 @@ public static class SpaFile
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<byte> WriteYUnitAsSpanByte(Span<byte> bytes, Span<byte> yUnits)
+    {
+        return WriteByteAt(ref bytes, YUnitFlag, yUnits);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static Span<float> ReadYUnitAsSpanFloat(ref Span<byte> bytes)
     {
         var yUnitAsBytes = ReadYUnitAsSpanByte(ref bytes);
@@ -130,6 +136,12 @@ public static class SpaFile
         // Reversed to read from 700 to 4000 like how wave numbers are read in CSV.
         yUnitAsFloats.Reverse();
         return yUnitAsFloats;
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static Span<byte> WriteYUnitAsSpanFloat(Span<byte> bytes, Span<float> yUnit)
+    {
+        return WriteByteAt(ref bytes, YUnitFlag, MemoryMarshal.Cast<float, byte>(yUnit));
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -235,5 +247,16 @@ public static class SpaFile
         return offset + 4 > data.Length
             ? 0
             : MemoryMarshal.Read<int>(data.Slice(offset, 4));
+    }
+    private static Span<byte> WriteByteAt(this ref Span<byte> data, short expectedFlag, Span<byte> bytesToWrite)
+    {
+        var (start, length) = ReadSpecificFlagPositions(ref data, expectedFlag);
+        var n = 0;
+        for (var i = start; start + length > i; i ++)
+        {
+            data[i] = bytesToWrite[n];
+            n++;
+        }
+        return data;
     }
 }
