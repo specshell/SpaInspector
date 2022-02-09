@@ -7,7 +7,7 @@
         <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
         <IsPackable>false</IsPackable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <WebAssembly_PackageVersion>6.0.1</WebAssembly_PackageVersion>
+        <WebAssembly_PackageVersion>6.0.2</WebAssembly_PackageVersion>
     </PropertyGroup>
 
     <ItemGroup>
