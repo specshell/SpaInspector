@@ -14,6 +14,7 @@ public static class Extensions
 
     public static void Position(this BinaryReader binaryReader, long position) => binaryReader.BaseStream.Position = position;
 
+    private static Regex FixNewlinesRegex = new Regex(@"([^ \t\r\n])[ \t]+$", RegexOptions.Multiline | RegexOptions.Compiled);
     public static string ReadNullTerminatedString(this BinaryReader stream)
     {
         var stringBuilder = new StringBuilder();
@@ -23,7 +24,7 @@ public static class Extensions
         var str = stringBuilder.ToString();
         var fixNewlines = Regex.Replace(str, @"\r\n?", "\n");
 
-        return Regex.Replace(fixNewlines, @"([^ \t\r\n])[ \t]+$", "$1", RegexOptions.Multiline);
+        return FixNewlinesRegex.Replace(fixNewlines, "$1");
     }
 
     /// <summary>
