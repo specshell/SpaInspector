@@ -251,12 +251,7 @@ public static class SpaFile
     private static Span<byte> WriteByteAt(this ref Span<byte> data, short expectedFlag, Span<byte> bytesToWrite)
     {
         var (start, length) = ReadSpecificFlagPositions(ref data, expectedFlag);
-        var n = 0;
-        for (var i = start; start + length > i; i ++)
-        {
-            data[i] = bytesToWrite[n];
-            n++;
-        }
+        bytesToWrite.CopyTo(data.Slice(start, length));
         return data;
     }
 }
